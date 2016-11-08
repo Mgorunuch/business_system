@@ -21,7 +21,6 @@ class CreateArticlesTable extends Migration
             $table->text('short');
             $table->integer('author');
             $table->integer('status');
-            $table->integer('comments');
             $table->timestamps();
         });
     }

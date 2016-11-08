@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Article;
+use App\Category;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Redirect;
 
 class ArticleController extends Controller
 {
@@ -64,12 +67,19 @@ class ArticleController extends Controller
         else
             $all['comments'] = 0;
 
-        $all['author'] = '1';
-        $all['status'] = 1;
+        $all['author'] = Auth::user()->id;
+        $all['status'] = 2;
 
-        Article::create($all);
+        if($all['category'] != 1 && Category::check($all['category'])) {
+            $article = Article::create($all);
+            $article->cat()->attach(1);
+            $article->cat()->attach($all['category']);
+        } else {
+            return back()->with(['message'=>'Такой категории не существует!!']);
+        }
 
-        return view('dashboard.blog.main', ['cat'=>0,'page'=>'1']);
+        return redirect('/blog')->with(['message'=>'article created']);
+        //return view('dashboard.blog.main', ['cat'=>1,'page'=>'1']);
     }
 
     /**
@@ -95,6 +105,10 @@ class ArticleController extends Controller
         //
     }
 
+    public function moderate() {
+        return view('dashboard.blog.article.moderate')->with(['articles'=>Article::where('status','=','2')->get()]);
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -114,10 +128,28 @@ class ArticleController extends Controller
 
         $all = $request->all();
 
-        $article = Article::find($id)->get();
+        $article = Article::find($id);
         $article->fill($all);
+        $article->status = 2;
+        $article->save();
+
+        return redirect('/blog/my-articles');
+    }
+
+    public function activate($id) {
+        $article = Article::find($id);
+        if(!$article) return back()->with(['message'=>'Article not defined']);
+        $article->status = 1;
+        $article->save();
+        return back()->with(['message'=>'Article allowed']);
+    }
+
+    public function decline($id) {
+        $article = Article::find($id);
+        if(!$article) return back()->with(['message'=>'Article not defined']);
         $article->status = 0;
         $article->save();
+        return back()->with(['message'=>'Article declined']);
     }
 
     /**

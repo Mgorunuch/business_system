@@ -14,13 +14,11 @@
         <div class="col-md-3">
             <ul class="nav nav-pills nav-stacked">
 
-                <li style="background-color: #fff" class=" @if($cat == 0) bg-primary @endif"><a href="/blog/0">All</a></li>
-
-                <li style="background-color: #fff" class=" @if($cat == 'my-articles') bg-primary @endif"><a href="/blog/my-articles">My articles</a></li>
+                <li style="background-color: #fff" class="@if($articles['cat'] == 'my_articles') btn-primary @endif"><a href="/blog/my-articles">My articles</a></li>
 
                 @foreach(\App\Category::all() as $category)
 
-                    <li style="background-color: #fff"><a href="/blog/{{$category->id}}">{{$category->name}}</a></li>
+                    <li class="@if($articles['cat'] == $category->id) btn-primary @endif" style="background-color: #fff"><a href="/blog/{{$category->id}}">{{$category->name}}</a></li>
 
                 @endforeach
 
@@ -43,15 +41,16 @@
         <div class="col-md-8 col-md-offset-1">
             <div class="settings modal-body" style="background-color: #fff; margin-bottom: 20px;">
                 <a href="{{action('ArticleController@create')}}" class="btn btn-primary">Create new article</a>
+                <a href="{{action('ArticleController@moderate')}}" class="btn btn-primary">Moderate</a>
             </div>
-            @foreach(\App\Article::getArticles($page, $cat) as $article)
+            @foreach($articles['pool'] as $article)
                 <div class="post" style="background-color: #fff; margin-bottom: 20px;">
                     <div class="modal-header">
                         <h3 style="margin: 0"><strong>{{$article->title}}</strong></h3>
                     </div>
                     @if($article->preview != null)
                     <div class="modal-body">
-                        <div class="row">
+                        <div class="">
                             <img src="{{$article->preview}}" width="100%" alt="">
                         </div>
                     </div>
@@ -60,16 +59,17 @@
                         {!! html_entity_decode($article->short) !!}
                     </div>
                     <div class="modal-footer text-right">
+                        @if(\App\Article::user_articles()->find($article->id))
+                            <a href="{{"/blog/article/edit/".$article->id}}" class="btn btn-default">Изменить</a>
+                        @endif
+
                         <a href="{{"/blog/article/".$article->id}}" class="btn btn-default">Подробнее...</a>
                     </div>
                 </div>
             @endforeach
             <div class="text-center">
-                <?php
-                    $pages = \App\Article::getPaginate($cat);
-                ?>
-                @for($i = 1; $i <= $pages; $i++)
-                    <a class="btn @if($i == $page) btn-primary @endif " href="{{"/blog/".$cat."/".$i."/"}}">{{$i}}</a>
+                @for($i = 1; $i <= $articles['pages']; $i++)
+                    <a class="btn @if($i == $articles['page']) btn-primary @endif " href="{{"/blog/".$articles['cat']."/".$i."/"}}">{{$i}}</a>
                 @endfor
             </div>
         </div>

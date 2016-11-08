@@ -18,6 +18,7 @@
                     @endif
                 </div>
                 <div class="form-group">
+                    <img src="{{$article->preview}}" width="100%" alt="">
                     <label for="preview">Post main image:</label>
                     <input type="file" name="preview" id="preview" accept="image/*" />
                     <p class="help-block">Some preview.</p>
@@ -53,7 +54,9 @@
                     <label for="category1">Category:</label>
                     <select name="category" id="category1" class="form-control">
                         @foreach(\App\Category::all() as $category)
-                            <option value="{{$category->id}}">{{$category->name}}</option>
+                            @if ($category->id != 1)
+                                <option value="{{$category->id}}">{{$category->name}}</option>
+                            @endif
                         @endforeach
                     </select>
                     @if ($errors->has('category'))

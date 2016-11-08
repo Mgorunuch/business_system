@@ -49,7 +49,9 @@
                     <label for="category1">Category:</label>
                     <select name="category" id="category1" class="form-control">
                         @foreach(\App\Category::all() as $category)
-                            <option value="{{$category->id}}">{{$category->name}}</option>
+                            @if ($category->id != 1)
+                                <option value="{{$category->id}}">{{$category->name}}</option>
+                            @endif
                         @endforeach
                     </select>
                     @if ($errors->has('category'))
