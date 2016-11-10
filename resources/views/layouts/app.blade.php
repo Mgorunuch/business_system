@@ -53,9 +53,10 @@
                             <li><a href="{{ url('/login') }}">Login</a></li>
                             <li><a href="{{ url('/register') }}">Register</a></li>
                         @else
+                            <li><a href="{{ url('/blog') }}">Blog</a></li>
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                    {{ Auth::user()->name }} <span class="caret"></span>
+                                    <img src="{{Auth::user()->profile_image}}" class="img-circle" height="30px" style="margin-right: 10px;margin-top: -3px;" alt="">{{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
 
                                 <ul class="dropdown-menu" role="menu">
@@ -70,6 +71,11 @@
                                             {{ csrf_field() }}
                                         </form>
                                     </li>
+                                    <li>
+                                        <a href="{{ url('/settings') }}">
+                                            Settings
+                                        </a>
+                                    </li>
                                 </ul>
                             </li>
                         @endif
@@ -78,6 +84,15 @@
             </div>
         </nav>
 
+        @if(Session::has('message'))
+            <div class="container">
+                <div class="col-xs-12" style="margin-bottom: 20px;">
+                    <div class="modal-body bg-info">
+                        {{Session::get('message')}}
+                    </div>
+                </div>
+            </div>
+        @endif
         @yield('content')
     </div>
 

@@ -35,7 +35,6 @@ class BlogActions extends Seeder
                 'preview'=>'/images/08.11.16/14785967486.png',
                 'text'=>'Full Article Description '.$i,
                 'author'=>$user->id,
-                'comments'=>0,
                 'status'=>random_int(0,2)
             ]);
 

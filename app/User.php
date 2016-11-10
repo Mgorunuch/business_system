@@ -31,4 +31,18 @@ class User extends Authenticatable
     public function articles() {
         return $this->hasMany(Article::class, 'author', 'id');
     }
+
+    public function achievements() {
+        return $this->belongsToMany(Achievement::class, 'user_achievement');
+    }
+
+    public function add_achievement($id) {
+        if(!empty($this->achievements()->find($id))) return false;
+        $this->achievements()->attach($id);
+    }
+
+    public function remove_achievement($id) {
+        if(empty($this->achievements()->find($id))) return false;
+        $this->achievements()->detach($id);
+    }
 }

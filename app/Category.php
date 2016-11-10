@@ -23,7 +23,7 @@ class Category extends Model
     public function getArticles($page = 1, $all = false, $perPage = 10) {
         if($all) {
 
-            return Article::where([['status','=','1']])->latest()->skip(($page-1)*$perPage)->take($perPage)->get();
+            return Article::where([['status','=','1']])->orderBy('updated_at', 'asc')->skip(($page-1)*$perPage)->take($perPage)->get();
 
         } else {
 
@@ -40,11 +40,13 @@ class Category extends Model
 
     public function getPaginate($all = false, $perPage = 10) {
 
-        $count = $this->articles()
+        $count = $this
+            ->articles()
             ->where('status','=','1')
             ->count();
 
         $pages = ceil($count/$perPage);
+
         return $pages;
     }
 

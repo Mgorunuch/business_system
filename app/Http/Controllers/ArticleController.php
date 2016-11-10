@@ -5,13 +5,16 @@ namespace App\Http\Controllers;
 use App\Article;
 use App\Category;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Validator;
 
 class ArticleController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -52,7 +55,7 @@ class ArticleController extends Controller
 
         if($request->hasFile('preview')) {
             $date = date('d.m.y');
-            $root = $_SERVER['DOCUMENT_ROOT']."/images/";
+            $root = $_SERVER['DOCUMENT_ROOT']."/images/articles/";
             if(!file_exists($root.$date)) File::makeDirectory($root.$date, 0700, true);
 
             $f_name = $request->file('preview')->getClientOriginalName();
@@ -61,11 +64,6 @@ class ArticleController extends Controller
             $request->file('preview')->move($root.$date,$server_filename);
             $all['preview'] = '/images/'.$date.'/'.$server_filename;
         }
-
-        if(isset($all['allow_comments']) && $all['allow_comments'] == "on")
-            $all['comments'] = 1;
-        else
-            $all['comments'] = 0;
 
         $all['author'] = Auth::user()->id;
         $all['status'] = 2;
@@ -102,7 +100,11 @@ class ArticleController extends Controller
      */
     public function edit($id)
     {
-        //
+        if(empty(Auth::user()->articles()->find($id)) || Auth::user()->id != 1) return back()->with(['message'=>'Undefined error']);
+
+        return view('dashboard.blog.article.edit', [
+            'article'=>Article::where('id','=',$id)->first()
+        ]);
     }
 
     public function moderate() {
@@ -118,6 +120,8 @@ class ArticleController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if(empty(Auth::user()->articles()->find($id)) || Auth::user()->id != 1) return back()->with(['message'=>'Undefined error']);
+
         $this->validate($request, [
             'title' => 'required|min:1|max:100', // TODO: make min 10
             'preview' => 'image|dimensions:min_width=300,min_height=100',
@@ -137,6 +141,8 @@ class ArticleController extends Controller
     }
 
     public function activate($id) {
+        if(Auth::user()->id == 1) return back()->with(['message'=>'Undefined error']);
+
         $article = Article::find($id);
         if(!$article) return back()->with(['message'=>'Article not defined']);
         $article->status = 1;
@@ -144,11 +150,21 @@ class ArticleController extends Controller
         return back()->with(['message'=>'Article allowed']);
     }
 
-    public function decline($id) {
+    public function decline(Request $request, $id) {
+        if(Auth::user()->id != 1) return back()->with(['message'=>'Undefined error']);
+
+        $all = $request->all();
+
+        Validator::make($all, [
+            'decline_comment' => 'string'
+        ])->validate();
+
         $article = Article::find($id);
         if(!$article) return back()->with(['message'=>'Article not defined']);
         $article->status = 0;
+        $article->decline_comment = $all['decline_comment'] ;
         $article->save();
+
         return back()->with(['message'=>'Article declined']);
     }
 
@@ -160,6 +176,25 @@ class ArticleController extends Controller
      */
     public function destroy($id)
     {
-        //
+        if(!empty(Auth::user()->articles()->find($id)) || Auth::user()->id == 1) {
+            Article::find($id)->delete();
+        } else {
+            return back()->with(['message'=>'Undefined error']);
+        }
+        return back()->with(['message'=>'Deleted']);
+    }
+
+
+    public function addLike($article_id) {
+        $user = Auth::user();
+        $article = Article::find($article_id);
+        $article->addLike($user);
+        return back();
+    }
+    public function addDislike($article_id) {
+        $user = Auth::user();
+        $article = Article::find($article_id);
+        $article->addDislike($user);
+        return back();
     }
 }

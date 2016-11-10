@@ -17,8 +17,12 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Validator::extend('isset_in_categories', function($attribute, $value, $parameters, $validator) {
-            $cat = Category::where('id','=','1')->first();
+            $cat = Category::where('id','=',$value)->first();
             return ($cat != null);
+        });
+        Validator::extend('isset_in_countries', function($attribute, $value, $parameters, $validator) {
+            $cat = DB::table('countries')->where('code','=',$value)->count();
+            return ($cat != 0);
         });
     }
 

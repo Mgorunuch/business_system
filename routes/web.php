@@ -20,8 +20,12 @@ Auth::routes();
 Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/settings', function (){
-        return view('dashboard.user.settings');
+        return view('dashboard.user.settings',['user'=>\Illuminate\Support\Facades\Auth::user()]);
     });
+
+    Route::post('/user/password_change', 'UserController@changePassword');
+    Route::post('/user/info_change', 'UserController@changeInfo');
+    Route::post('/user/image_change', 'UserController@image_change');
 
     Route::get('/blog', function() {
         return view('dashboard.blog.main', [
@@ -44,14 +48,17 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/blog/article/new', 'ArticleController@create');
     Route::post('/blog/article/new', 'ArticleController@store');
+    Route::post('/blog/article/destroy/{id}', 'ArticleController@destroy');
+    Route::post('/blog/article/addLike/{id}', 'ArticleController@addLike');
+    Route::post('/blog/article/addDislike/{id}', 'ArticleController@addDislike');
 
     Route::get('/blog/my-articles', function() {
         return view('dashboard.blog.main', [
             'articles'=>[
                 'pool'=>\App\Article::user_articles(1,10),
                 'page'=>1,
-                'cat'=>'my_articles',
-                'pages'=>\Illuminate\Support\Facades\Auth::user()->articles()->count()
+                'cat'=>'my-articles',
+                'pages'=>ceil(\Illuminate\Support\Facades\Auth::user()->articles()->count() / 10)
             ]
         ]);
     });
@@ -60,17 +67,13 @@ Route::group(['middleware' => 'auth'], function () {
             'articles'=>[
                 'pool'=>\App\Article::user_articles($page_id,10),
                 'page'=>$page_id,
-                'cat'=>'my_articles',
-                'pages'=>\Illuminate\Support\Facades\Auth::user()->articles()->count()
+                'cat'=>'my-articles',
+                'pages'=>ceil(\Illuminate\Support\Facades\Auth::user()->articles()->count() / 10)
             ]
         ]);
     });
 
-    Route::get('/blog/article/edit/{id}', function($id) {
-        return view('dashboard.blog.article.edit', [
-            'article'=>\App\Article::where('id','=',$id)->first()
-        ]);
-    });
+    Route::get('/blog/article/edit/{id}', 'ArticleController@edit');
     Route::post('/blog/article/edit/{id}', 'ArticleController@update');
 
     Route::get('/blog/article/{id}', 'ArticleController@show');

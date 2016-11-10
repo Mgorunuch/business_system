@@ -3,14 +3,7 @@
 @section('content')
     <?php if(!isset($page) || !$page) $page = 1; ?>
 
-    <div class="container">
-        @if(Session::has('message'))
-        <div class="col-xs-12" style="margin-bottom: 20px;">
-            <div class="modal-body bg-info">
-                {{Session::get('message')}}
-            </div>
-        </div>
-        @endif
+    <div class="container" xmlns="http://www.w3.org/1999/html">
         <div class="col-md-3">
             <ul class="nav nav-pills nav-stacked">
 
@@ -47,6 +40,9 @@
                 <div class="post" style="background-color: #fff; margin-bottom: 20px;">
                     <div class="modal-header">
                         <h3 style="margin: 0"><strong>{{$article->title}}</strong></h3>
+                        <div style="float: right; margin-top: -20px;">
+                            <img src="{{$article->author()->profile_image}}" class="img-circle" height="20" alt=""> {{$article->author()->name}}
+                        </div>
                     </div>
                     @if($article->preview != null)
                     <div class="modal-body">
@@ -59,12 +55,42 @@
                         {!! html_entity_decode($article->short) !!}
                     </div>
                     <div class="modal-footer text-right">
+                        <div style="float: left">
+                            <div style="display: inline-block; margin: 0 10px;">Rating:
+                                @if($article->rating < 0) <span style="color: red;">{{$article->rating}}</span>
+                                @elseif($article->rating > 0) <span style="color: green;">{{$article->rating}}</span>
+                                @else {{$article->rating}}
+                                @endif
+                            </div>
+                        </div>
+
                         @if(\App\Article::user_articles()->find($article->id))
-                            <a href="{{"/blog/article/edit/".$article->id}}" class="btn btn-default">Изменить</a>
+                            <a href="{{"/blog/article/edit/".$article->id}}" class="btn btn-default">Change</a>
+                            <a href="#" class="btn btn-danger"
+                               onclick="event.preventDefault(); document.getElementById('delete-article-{{$article->id}}').submit();">Delete</a>
+                            <form style="display: none;" id="delete-article-{{$article->id}}" action="/blog/article/destroy/{{$article->id}}" method="post">
+                                {{ csrf_field() }}
+                            </form>
                         @endif
 
-                        <a href="{{"/blog/article/".$article->id}}" class="btn btn-default">Подробнее...</a>
+                        <a href="{{"/blog/article/".$article->id}}" class="btn btn-default">More...</a>
                     </div>
+                    @if(\App\Article::user_articles()->find($article->id))
+                        <div class="modal-footer">
+                            Status:
+                            @if($article->status == 2)
+                                <span style="color: orange">On review</span>
+                            @elseif($article->status == 1)
+                                <span style="color: green">Published</span>
+                            @else
+                                @if(empty($article->decline_comment) || $article->decline_comment == null)
+                                    <span style="color: red">Declined without comment</span>
+                                @else
+                                    <span style="color: red">Declined ({{$article->decline_comment}})</span>
+                                @endif
+                            @endif
+                        </div>
+                    @endif
                 </div>
             @endforeach
             <div class="text-center">

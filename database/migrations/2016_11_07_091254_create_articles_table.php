@@ -19,9 +19,12 @@ class CreateArticlesTable extends Migration
             $table->string('preview')->nullable();
             $table->longText('text');
             $table->text('short');
-            $table->integer('author');
+            $table->text('decline_comment')->nullable();
+            $table->integer('author')->unsigned();
+            $table->integer('rating')->default(0);
             $table->integer('status');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

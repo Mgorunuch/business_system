@@ -61,16 +61,6 @@
                     @endif
                 </div>
                 <div class="form-group">
-                    <label for="allow_comments">
-                        <input id="allow_comments" type="checkbox" name="allow_comments"> Allow comments
-                    </label>
-                    @if ($errors->has('allow_comments'))
-                        <span class="help-block text-danger">
-                            <strong>{{ $errors->first('allow_comments') }}</strong>
-                        </span>
-                    @endif
-                </div>
-                <div class="form-group">
                     <button type="submit" class="btn btn-primary">Create</button>
                 </div>
             </form>

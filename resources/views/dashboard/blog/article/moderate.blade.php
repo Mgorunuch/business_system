@@ -18,15 +18,22 @@
                     </div>
                     <div class="modal-footer">
                         <span class="user">
-                            <?php $author = \App\User::find($article->author)->first(); ?>
-                            {{$author->name}}
+                            <div style="float: left;">
+                                <img src="{{$article->author()->profile_image}}" class="img-circle" height="20" alt=""> {{$article->author()->name}}
+                            </div>
                         </span>
                         <span style="display: inline-block; width: 20px;"></span>
                         <a href="/blog/moderate/allow/{{$article->id}}" class="btn btn-success">Allow</a>
                         <span style="display: inline-block; width: 20px;"></span>
-                        <a href="/blog/moderate/decline/{{$article->id}}" class="btn btn-danger">Decline</a>
+                        <a href="#" class="btn btn-danger"
+                           onclick="event.preventDefault(); document.getElementById('decline-form').submit();">Decline</a>
                         <span style="display: inline-block; width: 20px;"></span>
-                        <a href="{{"/blog/article/".$article->id}}" class="btn btn-default">Подробнее...</a>
+                        <form id="decline-form" style="width: 200px; display: inline-block; vertical-align: middle;" action="/blog/moderate/decline/{{$article->id}}">
+                            {{ csrf_field() }}
+                            <input type="text" class="form-control" name="decline_comment" placeholder="decline comment">
+                        </form>
+                        <span style="display: inline-block; width: 20px;"></span>
+                        <a href="{{"/blog/article/".$article->id}}" class="btn btn-default">More...</a>
                     </div>
                     <div class="row">
 
