@@ -32,6 +32,10 @@ class User extends Authenticatable
         return $this->hasMany(Article::class, 'author', 'id');
     }
 
+    public function pocket() {
+        return $this->hasOne(Pocket::class, 'id', 'pocket_id');
+    }
+
     public function achievements() {
         return $this->belongsToMany(Achievement::class, 'user_achievement');
     }
@@ -44,5 +48,10 @@ class User extends Authenticatable
     public function remove_achievement($id) {
         if(empty($this->achievements()->find($id))) return false;
         $this->achievements()->detach($id);
+    }
+
+    public function frizz_user() {
+        $this->status = 2;
+        $this->save();
     }
 }

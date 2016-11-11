@@ -4,6 +4,7 @@ use Illuminate\Database\Seeder;
 use App\Category;
 use App\Article;
 use App\User;
+use App\Pocket;
 
 class BlogActions extends Seeder
 {
@@ -15,10 +16,13 @@ class BlogActions extends Seeder
     public function run()
     {
 
+        $pocket = Pocket::create();
+
         $user = User::create([
             'name'=>'Admin',
             'email'=>'admin@admin.admin',
-            'password'=>bcrypt('password')
+            'password'=>bcrypt('password'),
+            'pocket_id'=>$pocket->id
         ]);
 
         $category = Category::create([
