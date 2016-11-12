@@ -18,6 +18,7 @@ class CreatePocketsTable extends Migration
             $table->float('value',12,2)->default(0);
             $table->float('frizzed_value',12,2)->default(0);
             $table->float('earned_all_time',12,2)->default(0);
+            $table->timestamp('last_payment')->nullable();
             $table->timestamps();
         });
     }

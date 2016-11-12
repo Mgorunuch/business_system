@@ -2,7 +2,7 @@
 
 return [
     'month_price' => '10',
-    'refers_count' => '2',
+    'refers_count' => 3,
     'algorithm' => [50,5,5,5,5,5,5,5,5],
     'payment_period_seconds' => 100,
     'lucky_steps' => [

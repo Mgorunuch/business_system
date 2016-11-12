@@ -16,8 +16,14 @@ Route::get('/', function () {
 });
 
 Auth::routes();
+Route::group(['middleware' => 'auth.admin'], function() {
 
-Route::group(['middleware' => 'auth'], function () {
+    Route::get('/blog/moderate', 'ArticleController@moderate');
+    Route::get('/blog/moderate/allow/{id}', 'ArticleController@activate');
+    Route::get('/blog/moderate/decline/{id}', 'ArticleController@decline');
+
+});
+Route::group(['middleware' => 'auth.activated'], function () {
 
     Route::get('/settings', function (){
         return view('dashboard.user.settings',['user'=>\Illuminate\Support\Facades\Auth::user()]);
@@ -37,13 +43,6 @@ Route::group(['middleware' => 'auth'], function () {
                     'pages'=>\App\Category::find(1)->getPaginate()
                 ]
         ]);
-    });
-    Route::group(['middleware' => 'auth.admin'], function() {
-
-        Route::get('/blog/moderate', 'ArticleController@moderate');
-        Route::get('/blog/moderate/allow/{id}', 'ArticleController@activate');
-        Route::get('/blog/moderate/decline/{id}', 'ArticleController@decline');
-
     });
 
     Route::get('/blog/article/new', 'ArticleController@create');
@@ -100,6 +99,13 @@ Route::group(['middleware' => 'auth'], function () {
             ]
         ]);
     });
-
-    Route::get('/home', 'HomeController@index');
+    Route::get('/home', function (){
+        return redirect('/blog');
+    });
+});
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('/home', function (){
+        return redirect('/payments/pay');
+    });
+    Route::get('/payments/pay', 'PaymentController@index');
 });

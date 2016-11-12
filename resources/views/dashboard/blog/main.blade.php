@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-    <?php if(!isset($page) || !$page) $page = 1; ?>
 
     <div class="container" xmlns="http://www.w3.org/1999/html">
         <div class="col-md-3">

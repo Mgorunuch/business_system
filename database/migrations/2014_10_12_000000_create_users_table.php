@@ -22,7 +22,9 @@ class CreateUsersTable extends Migration
             $table->string('city')->nullable();
             $table->string('sex')->nullable();
             $table->string('status_message')->nullable();
-            $table->string('pocket_id')->nullable();
+            $table->integer('pocket_id')->nullable();
+            $table->integer('position_id')->nullable();
+            $table->integer('reffer_id')->nullable();
             $table->string('email')->unique();
             $table->string('password');
             $table->integer('status')->default(2);
