@@ -56,13 +56,13 @@ class ArticleController extends Controller
         if($request->hasFile('preview')) {
             $date = date('d.m.y');
             $root = $_SERVER['DOCUMENT_ROOT']."/images/articles/";
-            if(!file_exists($root.$date)) File::makeDirectory($root.$date, 0700, true);
+            if(!file_exists($root.$date)) File::makeDirectory($root.$date, 0777, true);
 
             $f_name = $request->file('preview')->getClientOriginalName();
             $server_filename = Carbon::now()->timestamp.rand(1,10).'.'.$request->file('preview')->getClientOriginalExtension();
 
             $request->file('preview')->move($root.$date,$server_filename);
-            $all['preview'] = '/images/'.$date.'/'.$server_filename;
+            $all['preview'] = '/images/articles/'.$date.'/'.$server_filename;
         }
 
         $all['author'] = Auth::user()->id;
@@ -89,7 +89,10 @@ class ArticleController extends Controller
     public function show($id)
     {
         $article = Article::where('id','=',$id)->first();
-        return view('dashboard.blog.article.show', ['article' => $article]);
+        return view('dashboard.blog.article.show', [
+            'article' => $article,
+            'user'=>Auth::user()
+        ]);
     }
 
     /**
@@ -108,7 +111,9 @@ class ArticleController extends Controller
     }
 
     public function moderate() {
-        return view('dashboard.blog.article.moderate')->with(['articles'=>Article::where('status','=','2')->get()]);
+        return view('dashboard.moderate.article')->with([
+            'articles'=>Article::where('status','=','2')->get()
+        ]);
     }
 
     /**
@@ -132,6 +137,18 @@ class ArticleController extends Controller
 
         $all = $request->all();
 
+        if($request->hasFile('preview')) {
+            $date = date('d.m.y');
+            $root = $_SERVER['DOCUMENT_ROOT']."/images/articles/";
+            if(!file_exists($root.$date)) File::makeDirectory($root.$date, 0777, true);
+
+            $f_name = $request->file('preview')->getClientOriginalName();
+            $server_filename = Carbon::now()->timestamp.rand(1,10).'.'.$request->file('preview')->getClientOriginalExtension();
+
+            $request->file('preview')->move($root.$date,$server_filename);
+            $all['preview'] = '/images/articles/'.$date.'/'.$server_filename;
+        }
+
         $article = Article::find($id);
         $article->fill($all);
         $article->status = 2;
@@ -141,7 +158,7 @@ class ArticleController extends Controller
     }
 
     public function activate($id) {
-        if(Auth::user()->id == 1) return back()->with(['message'=>'Undefined error']);
+        if(Auth::user()->id != 1) return back()->with(['message'=>'Undefined error']);
 
         $article = Article::find($id);
         if(!$article) return back()->with(['message'=>'Article not defined']);
@@ -176,8 +193,11 @@ class ArticleController extends Controller
      */
     public function destroy($id)
     {
-        if(!empty(Auth::user()->articles()->find($id)) || Auth::user()->id == 1) {
-            Article::find($id)->delete();
+        $user = Auth::user();
+        $article = Article::findOrFail($id);
+
+        if($article->author == $user->id || $user->id == 1) {
+            $article->delete();
         } else {
             return back()->with(['message'=>'Undefined error']);
         }

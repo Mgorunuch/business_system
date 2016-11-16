@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container">
-        <div class="col-md-10 col-md-offset-1" style="background-color: #fff;">
+        <div class="col-md-10 col-md-offset-1 article" style="background-color: #fff;">
             <div class="modal-header">
                 <strong>Create new article</strong>
             </div>

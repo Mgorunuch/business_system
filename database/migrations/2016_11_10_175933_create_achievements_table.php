@@ -16,7 +16,7 @@ class CreateAchievementsTable extends Migration
         Schema::create('achievements', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->string('image_url')->default('/images/achievements/default_achievement.svg');
+            $table->text('description');
             $table->timestamps();
         });
     }

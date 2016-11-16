@@ -12,7 +12,7 @@ return [
     | any other location as required by the application or its packages.
     */
 
-    'name' => 'Laravel',
+    'name' => 'Piligrim Group',
 
     /*
     |--------------------------------------------------------------------------
@@ -167,7 +167,7 @@ return [
          * Package Service Providers...
          */
 
-        //
+        Barryvdh\Debugbar\ServiceProvider::class,
 
         /*
          * Application Service Providers...

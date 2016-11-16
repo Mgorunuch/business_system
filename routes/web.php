@@ -18,15 +18,40 @@ Route::get('/', function () {
 Auth::routes();
 Route::group(['middleware' => 'auth.admin'], function() {
 
-    Route::get('/blog/moderate', 'ArticleController@moderate');
-    Route::get('/blog/moderate/allow/{id}', 'ArticleController@activate');
-    Route::get('/blog/moderate/decline/{id}', 'ArticleController@decline');
+    Route::get('/dashboard/moderate/articles', 'ArticleController@moderate');
+    Route::get('/dashboard/moderate/articles/allow/{id}', 'ArticleController@activate');
+    Route::post('/dashboard/moderate/articles/decline/{id}', 'ArticleController@decline');
+
+    Route::get('/dashboard/moderate/categories', 'CategoriesController@moderate');
+    Route::post('/dashboard/moderate/categories/edit/{id}', 'CategoriesController@edit');
+
+    Route::get('/dashboard/moderate/payments', 'PaymentController@moderate');
+    Route::post('/dashboard/moderate/payments/change_status', 'PaymentController@change_status');
 
 });
 Route::group(['middleware' => 'auth.activated'], function () {
 
+    Route::post('/payments/withdraw', 'PaymentController@withdraw');
+
     Route::get('/settings', function (){
         return view('dashboard.user.settings',['user'=>\Illuminate\Support\Facades\Auth::user()]);
+    });
+    Route::get('/achievements', function (){
+        return view('dashboard.user.achievements',['user'=>\Illuminate\Support\Facades\Auth::user()]);
+    });
+    Route::get('/referal', function (){
+        return view('dashboard.user.referal',[
+            'user'=>\Illuminate\Support\Facades\Auth::user(),
+            'withdraw_processing' => \App\Http\Controllers\PaymentController::getWithdraw(),
+            'config'=>\Illuminate\Support\Facades\Config::get('PerfectMoney'),
+            'levels'=>\Illuminate\Support\Facades\Auth::user()->get_users_count(),
+            'referals'=>\Illuminate\Support\Facades\Auth::user()->getReferals(10),
+            'referal_counts'=>\Illuminate\Support\Facades\Auth::user()->getReferalCounts(),
+            'referal_week'=>\Illuminate\Support\Facades\Auth::user()->getReferalWeek(),
+            'referal_tree_week'=>\Illuminate\Support\Facades\Auth::user()->getReferalTreeWeek(),
+            'left_time_lucky'=>\Illuminate\Support\Facades\Auth::user()->getLuckyStep(),
+            'payment_left_time'=>\Illuminate\Support\Facades\Auth::user()->getPaymentLeft()
+        ]);
     });
 
     Route::post('/user/password_change', 'UserController@changePassword');

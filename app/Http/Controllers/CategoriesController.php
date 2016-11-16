@@ -54,15 +54,13 @@ class CategoriesController extends Controller
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
-        //
+        $all = $request->all();
+        $cat = Category::find($id)->first();
+        $cat->name = $all['name'];
+        $cat->save();
+        return back();
     }
 
     /**
@@ -86,5 +84,9 @@ class CategoriesController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function moderate() {
+        return view('dashboard.moderate.categories');
     }
 }

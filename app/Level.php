@@ -73,15 +73,14 @@ class Level extends Model {
     public function emptyPositionUnder(Position $position) {
         $refers_count = Config::get('const.refers_count');
 
-        $level_id = $position->level_id;
+        $level_id = $position->level_id+1;
         $range = ['min'=>0,'max'=>0];
         $range['max'] = $position->level_position * $refers_count;
         $range['min'] = $range['max'] - $refers_count + 1;
 
-        while( Level::find($level_id)->full == 1 || !$this->checkRange($level_id, $range) ) {
+        while( Level::findOrCreate($level_id)->full == 1 || !$this->checkRange($level_id, $range) ) {
 
             $level_id++;
-            if(is_null(Level::find($level_id))) Level::newLevel();
             $range['max'] = $range['max'] * $refers_count;
             $range['min'] = ($range['min'] * $refers_count) - $refers_count + 1;
 
@@ -146,6 +145,19 @@ class Level extends Model {
 
         if($count == ($range['max'] - $range['min']+1)) return false;
         return true;
+    }
+
+    public static function checkCountRange($level_id, $range) {
+        $count = Position::where([
+            ['level_id', '=', $level_id],
+            ['level_position', '>=', $range['min']],
+            ['level_position', '<=', $range['max']]
+        ])->count();
+
+        if(empty($count)) return false;
+        if($count == ($range['max'] - $range['min']+1)) $full = 1;
+        else $full = 0;
+        return ['level_id'=>$level_id, 'count'=>$count, 'full'=>$full];
     }
 
     public function positionStatus($position) {

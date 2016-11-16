@@ -24,8 +24,8 @@ class Article extends Model
         return $this->belongsToMany(User::class, 'article_user_rating');
     }
 
-    public function author() {
-        return User::find($this->author);
+    public function authorModel() {
+        return $this->hasOne(User::class, 'id', 'author');
     }
 
     public static function user_articles($page = false, $perPage = 10) {

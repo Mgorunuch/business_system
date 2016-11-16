@@ -18,8 +18,8 @@ class CreateExternalTransactionsTable extends Migration
             $table->float('value',12,2);
             $table->enum('status',['failed','success','waiting'])->default('waiting');
             $table->enum('type',['withdraw','put']);
-            $table->integer('vallet_from');
-            $table->integer('vallet_to');
+            $table->string('vallet_from');
+            $table->string('vallet_to');
             $table->integer('pocket_id');
             $table->timestamps();
         });

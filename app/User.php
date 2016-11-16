@@ -2,10 +2,13 @@
 
 namespace App;
 
+use App\Http\Controllers\PaymentController;
+use Carbon\Carbon;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
@@ -53,9 +56,198 @@ class User extends Authenticatable
         return $this->hasOne(User::class, 'id', 'reffer_id');
     }
 
-    public function add_achievement($id) {
-        if(!empty($this->achievements()->find($id))) return false;
-        $this->achievements()->attach($id);
+    public function getReferals($count=false) {
+        if(!$count) {
+            return DB::table('users')->where('reffer_id',$this->id)->select(['id','name','email','status'])->get()->all();
+        } else {
+            return DB::table('users')->where('reffer_id',$this->id)->limit($count)->select(['id','name','email','status'])->get()->all();
+        }
+    }
+
+    public function getBanTimeDays($html=false) {
+        $now = Carbon::today();
+        $days_ban = Config::get('const.ban_after_frizz');
+        $ban_day = Carbon::parse($now);
+        $ban_day->day += $days_ban;
+
+        $diff = $ban_day->diffInDays($now);
+        if(!$html) {
+            return $diff;
+        } else {
+            if($diff == 1) return "<span class='text-danger'>Banned this night</span>";
+            return $diff;
+        }
+    }
+
+    public function getReferalCounts() {
+        $counts = [];
+        $counts['working'] = DB::table('users')->where([
+            ['reffer_id','=',$this->id],
+            ['status','=',1]
+        ])->count();
+        $counts['frizzed'] = DB::table('users')->where([
+            ['reffer_id','=',$this->id],
+            ['status','=',2]
+        ])->count();
+        $counts['banned'] = DB::table('users')->where([
+            ['reffer_id','=',$this->id],
+            ['status','=',0]
+        ])->count();
+        return $counts;
+    }
+
+    public function getReferalWeek() {
+        $counts = [];
+        $today = Carbon::today();
+        $i = 0;
+
+        do {
+            if($i == 0) {
+                $counts[] = DB::table('users')->where([
+                    ['reffer_id','=',$this->id],
+                    ['created_at','>',$today]
+                ])->count();
+            } else {
+                $day = Carbon::parse($today);
+                $day->day -= $i;
+
+                $day2 = Carbon::parse($day);
+                $day2->day += 1;
+
+                $counts[] = DB::table('users')->where([
+                    ['reffer_id','=',$this->id],
+                    ['created_at','>=',$day],
+                    ['created_at','<=',$day2]
+                ])->count();
+            }
+            $i++;
+        } while($i < 7);
+
+        return $counts;
+    }
+
+    public function getReferalTreeWeek() {
+        $counts = [];
+
+        $pos_ids = [];
+        $pos = [[$this->position]];
+        $itterations = 9;
+        for($j = 0; $j < $itterations; $j++) {
+            for($l = 0; $l < count($pos[$j]); $l++) {
+                if($j != ($itterations-1))
+                    $pos[] = $pos[$j][$l]->childrens();
+                foreach ($pos[$j][$l]->childrens(['id']) as $p) {
+                    $pos_ids[] = $p['id'];
+                }
+            }
+        }
+
+        $today = Carbon::today();
+        $i = 0;
+        do {
+            if($i == 0) {
+                $counts[] = DB::table('positions')
+                    ->whereIn('id',$pos_ids)
+                    ->where([
+                        ['created_at','>',$today]
+                    ])->count();
+            } else {
+                $day = Carbon::parse($today);
+                $day->day -= $i;
+
+                $day2 = Carbon::parse($day);
+                $day2->day += 1;
+
+                $counts[] = DB::table('positions')
+                    ->whereIn('id',$pos_ids)
+                    ->where([
+                        ['created_at','>=',$day],
+                        ['created_at','<=',$day2]
+                    ])->count();
+            }
+            $i++;
+        } while($i < 7);
+
+        return $counts;
+    }
+
+    public function getLuckyStep() {
+        $now = Carbon::now();
+        $lucky_steps = Config::get('const.lucky_steps');
+
+        $created = Carbon::parse($this->position->created_at);
+        if(PaymentController::checkLuckyWeek($this)) {
+            foreach ($lucky_steps as $step) {
+                $step_time = $created->addSecond($step[0]);
+                if($step_time > $now) {
+                    $diff = $step_time->diffInSeconds($now);
+                    return [
+                        'left_time' => $diff,
+                        'mult' => $step[1]
+                    ];
+                }
+            }
+        };
+        return false;
+    }
+
+    public function getPaymentLeft() {
+        $now = Carbon::now();
+        $payment = Carbon::parse($this->pocket->last_payment);
+        $payment_period_seconds = Config::get('const.payment_period_seconds');
+
+        if(!is_null($payment)) {
+            $payment->addSecond($payment_period_seconds);
+            return $payment->diffInSeconds($now);
+        }
+        return 00;
+    }
+
+    public function get_users_count() {
+        $refers_count = Config::get('const.refers_count');
+        $levels = [];
+        $range = [];
+
+        $pos = $this->position->level_position;
+        $level = $this->position->level_id;
+
+        $range['max'] = $pos;
+        $range['min'] = $pos;
+        $i = 0;
+        do {
+            $levels[$i] = [];
+
+            $level++;
+            $range['max'] = $range['max'] * $refers_count;
+            $range['min'] = ($range['min'] * $refers_count) - $refers_count + 1;
+
+            $lev = Level::checkCountRange($level, $range);
+            if($lev == false) {
+                $levels[$i]['id'] = $i+1;
+                $levels[$i]['count'] = 0;
+                $levels[$i]['full'] = 0;
+            } else {
+                $levels[$i]['id'] = $i+1;
+                $levels[$i]['count'] = $lev['count'];
+                $levels[$i]['full'] = $lev['full'];
+            }
+            $i++;
+        } while($i < 9);
+
+        return $levels;
+    }
+
+    public function add_achievement($id, $level) {
+        $achievement = $this->achievements()->where('user_id',$id)->first();
+
+        if(is_null($achievement)) {
+            $this->achievements()->attach($id);
+            $this->achievements()->find($id)->setAchievementLevel($this->id, $level);
+        } elseif($achievement->getAchievementLevel($this->id) != $level) {
+            $achievement->setAchievementLevel($this->id, $level);
+        } else {
+            return false;
+        }
     }
 
     public function remove_achievement($id) {
@@ -65,6 +257,12 @@ class User extends Authenticatable
 
     public function frizz_user() {
         $this->status = 2;
+        $this->save();
+    }
+
+    public function ban_user() {
+        $this->position->deletePosition();
+        $this->status = 0;
         $this->save();
     }
 

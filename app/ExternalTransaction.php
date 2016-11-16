@@ -10,6 +10,10 @@ class ExternalTransaction extends Model
         'value', 'vallet_from', 'vallet_to', 'pocket_id', 'status', 'type'
     ];
 
+    public function pocket() {
+        return $this->hasOne(Pocket::class, 'id', 'pocket_id');
+    }
+
     public static function createNew($data) {
         $payment = ExternalTransaction::create($data);
         $pocket = $payment->user->pocket;
@@ -18,7 +22,7 @@ class ExternalTransaction extends Model
 
             $pocket->add_balance($payment->value);
 
-        } elseif($payment->status == 'success' && $payment->type == 'withdraw') {
+        } elseif($payment->type == 'withdraw') {
 
             $pocket->spend_balance($payment->value);
 

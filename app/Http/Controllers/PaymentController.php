@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\ExternalTransaction;
 use App\InternalTransaction;
+use App\Pocket;
 use App\Position;
 use App\User;
 use Carbon\Carbon;
@@ -11,11 +12,46 @@ use Illuminate\Contracts\Logging\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 
 class PaymentController extends Controller
 {
     public function index() {
         return view('dashboard.payment.pay')->with(['message'=>'You must pay for subscription']);
+    }
+
+    public function moderate() {
+        $external = ExternalTransaction::where([
+            ['status','=','waiting'],
+            ['type','=','withdraw'],
+        ])->get()->all();
+
+        $pockets = [];
+        foreach ($external as $ext) {
+            $pockets[] = Pocket::find($ext->pocket_id);
+        }
+        return view('dashboard.moderate.payments')->with(['external'=>$external, 'pockets'=>$pockets]);
+    }
+
+    public function change_status(Request $request) {
+
+        $all = $request->all();
+
+        $transaction = ExternalTransaction::find($all['id']);
+        if($all['status'] == 'accept') {
+            $transaction->status = 'success';
+
+            // TODO: MAKE PAYMENT HERE
+        } elseif ($all['status'] == 'decline') {
+            $transaction->status = 'failed';
+
+            $pocket = $transaction->pocket;
+            $pocket->add_balance($all['value']);
+            $pocket->save();
+        }
+        $transaction->save();
+
+        return $this->moderate();
     }
 
     public function payFailed() {
@@ -84,16 +120,24 @@ class PaymentController extends Controller
                 'vallet_from' => 1,
                 'vallet_to' => $all['account_to'],
                 'pocket_id' => $user->pocket_id,
-                'status' => 'success',
                 'type' => 'withdraw'
             ];
 
             $transaction = ExternalTransaction::createNew($data);
 
-            return redirect('/blog')->with(['message'=>'Your money sended']);
+            return back();
         } else {
-            return redirect('/blog')->with(['message'=>'You cant withdraw this amount']);
+            return back();
         }
+
+    }
+
+    public static function getWithdraw() {
+
+        $user = Auth::user();
+        return ExternalTransaction::where([
+            ['pocket_id', '=', $user->pocket->id]
+        ])->get()->all();
 
     }
 
@@ -101,6 +145,8 @@ class PaymentController extends Controller
 
         $user = User::find($user_id);
         $algorithm = Config::get('const.algorithm');
+        $month_price = Config::get('const.month_price');
+        if($user->pocket->check_balance()) return false;
 
         $data = [
             'pocket_from_id' => $user->pocket->id,
@@ -114,6 +160,18 @@ class PaymentController extends Controller
         if($left_money == 0 && $step == 0) $left_money = $month_price;
 
         if($user_to->position->level_id == 1 || count($algorithm) == $step) {
+
+            // Start money % to refer
+            $to_refer = Config::get('const.to_refer');
+            $to_refer = $month_price/100*$to_refer;
+            $data = [
+                'pocket_from_id' => $user->pocket->id,
+                'pocket_to_id' => $to_refer,
+                'value' => $to_refer
+            ];
+            $transaction = InternalTransaction::createNew($data);
+            $left_money -= $to_refer;
+            // End money % to refer
 
             if($lucky_week && PaymentController::checkLuckyWeek($user)) {
                 PaymentController::processLuckyWeek($user, $left_money);
@@ -140,35 +198,26 @@ class PaymentController extends Controller
     }
 
     public static function checkLuckyWeek(User $user) {
-        if(!is_null($user->reffer)) {
+        $lucky_steps = Config::get('const.lucky_steps');
+        $now = Carbon::now();
 
-            $lucker = Config::get('const.lucky_steps');
-            $fulltime = 0;
-            $steps = 0;
+        $created = $user->created_at;
 
-            foreach ($lucker as $lucky) {
-                $fulltime += $lucky[0];
-                $steps++;
-            }
-
-            if($fulltime == 0) { return false;
-            } else {
-                $now = Carbon::now();
-                $reseter = ''.$fulltime.' seconds';
-                $date = $now->modify($reseter);
-
-                if($user->reffer->created_at > $date) return false;
-
-                return true;
-            }
-
-        } else {
-            return false;
+        $timeSec = 0;
+        foreach ($lucky_steps as $step) {
+            $timeSec += $step[0];
         }
+
+        $created->addSeconds($timeSec);
+
+        if($created > $now)
+            return true;
+        return false;
     }
 
     public static function processLuckyWeek($user, $value) {
         $lucker = Config::get('const.lucky_steps');
+        $month_payment = Config::get('const.month_price');
         $now = Carbon::now();
 
         foreach ($lucker as $lucky) {
@@ -176,11 +225,11 @@ class PaymentController extends Controller
             $date = $now->modify($reseter);
 
             if($user->reffer->created_at < $date) {
-                $mult = $lucky[1]/100;
+                $money = $month_payment / 100 * $lucky[1];
                 $data = [
                     'pocket_from_id'=>$user->pocket->id,
                     'pocket_to_id'=>$user->reffer->pocket->id,
-                    'value'=>$value*$mult
+                    'value'=>$money
                 ];
                 $process = InternalTransaction::createNew($data);
 

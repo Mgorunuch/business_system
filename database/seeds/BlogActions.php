@@ -24,17 +24,35 @@ class BlogActions extends Seeder
             'name'=>'Admin',
             'email'=>'admin@admin.admin',
             'password'=>bcrypt('password'),
-            'pocket_id'=>$pocket->id
+            'pocket_id'=>$pocket->id,
+            'status'=>1,
+            'reffer_id'=>null
         ]);
 
         $position = Position::createNewPosition($user->id);
         $user->position_id = $position->id;
         $user->save();
 
-        $j = 70;
+        $pocket2 = ['value' => '100','frizzed_value' => '10'];
+        $pocket2 = Pocket::create($pocket2);
+
+
+        $user2 = [
+            'name' => 'user123123',
+            'email' => 'testuser123123@gmail.com',
+            'password' => bcrypt('123456'),
+            'pocket_id' => $pocket2->id
+        ];
+        $user2 = User::create($user2);
+
+        $position2 = Position::createNewPosition($user2->id);
+        $user2->position_id = $position2->id;
+        $user2->save();
+
+        $j = 30;
         for($i = 0; $i < $j; $i++) {
 
-            $pocket = ['value' => '100.00','frizzed_value' => '10.00'];
+            $pocket = ['value' => '100','frizzed_value' => '10'];
             $pocket = Pocket::create($pocket);
 
 
@@ -42,7 +60,8 @@ class BlogActions extends Seeder
                 'name' => 'user'.$i,
                 'email' => 'test'.$i.'@gmail.com',
                 'password' => bcrypt('123456'),
-                'pocket_id' => $pocket->id
+                'pocket_id' => $pocket->id,
+                'reffer_id' => 1
             ];
             $user = User::create($user);
 

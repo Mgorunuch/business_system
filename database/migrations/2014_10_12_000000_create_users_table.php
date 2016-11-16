@@ -24,7 +24,7 @@ class CreateUsersTable extends Migration
             $table->string('status_message')->nullable();
             $table->integer('pocket_id')->nullable();
             $table->integer('position_id')->nullable();
-            $table->integer('reffer_id')->nullable();
+            $table->integer('reffer_id')->nullable()->default(1);
             $table->string('email')->unique();
             $table->string('password');
             $table->integer('status')->default(2);

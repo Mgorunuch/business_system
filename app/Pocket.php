@@ -8,7 +8,15 @@ use Illuminate\Support\Facades\Config;
 class Pocket extends Model
 {
     public function user() {
-        return $this->hasOne(Pocket::class, 'pocket_id', 'id');
+        return $this->hasOne(User::class, 'pocket_id', 'id');
+    }
+
+    public function withdraw() {
+        return $this->hasMany(ExternalTransaction::class, 'pocket_id', 'id');
+    }
+
+    public function full_ballance() {
+        return $this->frizzed_value + $this->value;
     }
 
     /**
@@ -51,7 +59,7 @@ class Pocket extends Model
             if($this->balance_pocket()) {
                 return true;
             } else {
-                $this->user()->frizz_user();
+                $this->user->frizz_user();
                 return false;
             }
         }

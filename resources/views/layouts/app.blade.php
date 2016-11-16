@@ -14,15 +14,20 @@
     <link href="/css/app.css" rel="stylesheet">
 
     <!-- Scripts -->
+    <script type="text/javascript" src="//vk.com/js/api/openapi.js?136"></script>
     <script>
         window.Laravel = <?php echo json_encode([
             'csrfToken' => csrf_token(),
         ]); ?>
     </script>
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:100,300,400,700|Roboto:100,300,400,400i,500,500i,700,900&amp;subset=cyrillic-ext" rel="stylesheet">
+    <script src="https://use.fontawesome.com/141b753a67.js"></script>
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-default navbar-static-top">
+        <div class="fake_navbar"></div>
+        <nav class="navbar top-navbar navbar-default navbar-fixed-top">
             <div class="container">
                 <div class="navbar-header">
 
@@ -35,8 +40,8 @@
                     </button>
 
                     <!-- Branding Image -->
-                    <a class="navbar-brand" href="{{ url('/') }}">
-                        {{ config('app.name', 'Laravel') }}
+                    <a class="navbar-brand" href="{{ url('/home') }}">
+                        <div class="logo"><img src="/images/logo.png" height="100%" alt=""> {{ config('app.name', 'Laravel') }}</div>
                     </a>
                 </div>
 
@@ -56,13 +61,28 @@
                             <li><a href="{{ url('/blog') }}">Blog</a></li>
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                    <img src="{{Auth::user()->profile_image}}" class="img-circle" height="30px" style="margin-right: 10px;margin-top: -3px;" alt="">{{ Auth::user()->name }} <span class="caret"></span>
+                                    <img src="{{Auth::user()->profile_image}}" class="img-circle" height="25px" style="margin-right: 10px;margin-top: -3px;" alt="">{{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
 
                                 <ul class="dropdown-menu" role="menu">
                                     <li>
+                                        <a href="{{ url('/settings') }}">
+                                            Settings
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ url('/achievements') }}">
+                                            Achievements
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ url('/referal') }}">
+                                            Referal Program
+                                        </a>
+                                    </li>
+                                    <li>
                                         <a href="{{ url('/logout') }}"
-                                            onclick="event.preventDefault();
+                                           onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                             Logout
                                         </a>
@@ -71,11 +91,6 @@
                                             {{ csrf_field() }}
                                         </form>
                                     </li>
-                                    <li>
-                                        <a href="{{ url('/settings') }}">
-                                            Settings
-                                        </a>
-                                    </li>
                                 </ul>
                             </li>
                         @endif
@@ -83,18 +98,17 @@
                 </div>
             </div>
         </nav>
+        @yield('page_info')
 
-        @if(Session::has('message'))
-            <div class="container">
-                <div class="col-xs-12" style="margin-bottom: 20px;">
-                    <div class="modal-body bg-info">
-                        {{Session::get('message')}}
-                    </div>
-                </div>
-            </div>
-        @endif
+        @extends('components.messages')
+
         @yield('content')
+        <div class="clearfix"></div>
     </div>
+
+    <footer class="text-center">
+        All right reserved <i class="fa fa-copyright" aria-hidden="true"></i> Piligrim Group
+    </footer>
 
     <!-- Scripts -->
     @yield('scripts')
