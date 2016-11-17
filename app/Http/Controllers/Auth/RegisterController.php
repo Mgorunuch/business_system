@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Pocket;
 use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -48,9 +49,10 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => 'required|max:255|unique:users',
+            'name' => 'required|max:255|unique:users|without_spaces',
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|min:6|confirmed',
+            'reffer_id' => 'min:1'
         ]);
     }
 
@@ -62,10 +64,25 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+        if(!is_null($data['reffer_id'])) {
+            $refer = User::where('name',$data['reffer_id'])->first();
+        }
+        if(is_null($refer)) {
+            $refer = 1;
+        } else {
+            $refer = $refer->id;
+        }
+        $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
+            'reffer_id' => $refer,
         ]);
+
+        $pocket = Pocket::create();
+        $user->pocket_id = $pocket->id;
+        $user->save();
+
+        return $user;
     }
 }

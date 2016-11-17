@@ -17,7 +17,10 @@ use Illuminate\Support\Facades\DB;
 class PaymentController extends Controller
 {
     public function index() {
-        return view('dashboard.payment.pay')->with(['message'=>'You must pay for subscription']);
+        return view('dashboard.payment.pay')->with(['message'=>'You must pay for subscription'])->with([
+            'user'=>\Illuminate\Support\Facades\Auth::user(),
+            'config'=>\Illuminate\Support\Facades\Config::get('PerfectMoney')
+        ]);
     }
 
     public function moderate() {

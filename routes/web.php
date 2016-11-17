@@ -125,10 +125,10 @@ Route::group(['middleware' => 'auth.activated'], function () {
         ]);
     });
     Route::get('/home', function (){
-        return redirect('/blog');
+        return redirect('/referal');
     });
 });
-Route::group(['middleware' => 'auth'], function () {
+Route::group(['middleware' => 'auth.frizzed'], function () {
     Route::get('/home', function (){
         return redirect('/payments/pay');
     });

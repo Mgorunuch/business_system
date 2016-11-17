@@ -22,6 +22,18 @@
   animation-fill-mode: both;
 }
 
+.abs-full-sizes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.absolute-center {
+  @extend .abs-full-sizes;
+  margin: auto;
+}
+
 body {
   background-color: #f8f8f8;
   &.modal-open {
@@ -33,6 +45,12 @@ body {
 .reset-margin {
   margin: 0;
 }
+.inner-inline-block {
+  &>* {
+    display: inline-block;
+    float: none;
+  }
+}
 .flex {
   display: flex;
 }
@@ -43,6 +61,11 @@ body {
 .flex-center {
   @extend .flex;
   justify-content: center;
+}
+.flex-abs-center {
+  @extend .flex;
+  justify-content: center;
+  align-items: center;
 }
 .text-normal {
   color: $grey;

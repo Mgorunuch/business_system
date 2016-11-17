@@ -1,11 +1,20 @@
 @extends('layouts.app')
 
+@section('page_info')
+    <div class="page_info">
+        <div class="container flex-center">
+            <div class="title">
+                Login page
+            </div>
+        </div>
+    </div>
+@endsection
+
 @section('content')
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">Login</div>
+            <div class="panel panel-default" style="margin-top: 20px; padding-top: 20px;">
                 <div class="panel-body">
                     <form class="form-horizontal" role="form" method="POST" action="{{ url('/login') }}">
                         {{ csrf_field() }}

@@ -24,6 +24,9 @@ class AppServiceProvider extends ServiceProvider
             $cat = DB::table('countries')->where('code','=',$value)->count();
             return ($cat != 0);
         });
+        Validator::extend('without_spaces', function($attr, $value){
+            return preg_match('/^\S*$/u', $value);
+        });
     }
 
     /**

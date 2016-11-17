@@ -76,7 +76,9 @@
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane fade in active" id="tab_withdaw_money">
-                            <div class="modal-header text-center"><strong>Withdraw money</strong></div>
+                            <div class="modal-header text-center">
+                                <img src="http://perfectmoney.is/img/logo3.png" alt=""><br>
+                                <small class="" style="margin-bottom: 20px; margin-top: 5px; display: inline-block;">Powered by Perfect Money</small></div>
                             <div class="modal-body text-center">
                                 <form action="{{ url('/payments/withdraw') }}" method="POST" role="form" class="text-left">
                                     {{ csrf_field() }}
@@ -114,7 +116,9 @@
                             </div>
                         </div>
                         <div class="tab-pane fade" id="tab_pay_money">
-                            <div class="modal-header text-center"><strong>Pay money</strong></div>
+                            <div class="modal-header text-center">
+                                <img src="http://perfectmoney.is/img/logo3.png" alt=""><br>
+                                <small class="" style="margin-bottom: 20px; margin-top: 5px; display: inline-block;">Powered by Perfect Money</small></div>
                             <div class="modal-body text-left">
                                 <form role="form" method="POST" action="https://perfectmoney.is/api/step1.asp">
 
