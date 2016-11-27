@@ -23,6 +23,39 @@ class PaymentController extends Controller
         ]);
     }
 
+    public function activate() {
+        $user = Auth::user();
+        ($user->reffer_id) ? $reffer = User::find($user->reffer_id) : $reffer = false;
+
+        if($user->pocket->check_balance()) {
+            if($user->status == 2 && $user->pocket->frizzed_value >= Config::get('const.month_price')) {
+                $user->status = 1;
+                if(is_null($user->position)) {
+                    if($reffer) {
+                        $position = Position::createNewPosition($user->id, $reffer->id);
+                        $user->position_id = $position->id;
+                        $user->save();
+                        PaymentController::monthPayment($user->id, true);
+                    } else {
+                        $position = Position::createNewPosition($user->id);
+                        $user->position_id = $position->id;
+                        $user->save();
+                        PaymentController::monthPayment($user->id);
+                    }
+                } else {
+                    if($reffer) {
+                        PaymentController::monthPayment($user->id, true);
+                    } else {
+                        PaymentController::monthPayment($user->id);
+                    }
+                }
+            }
+            return redirect('/blog');
+        } else {
+            return back();
+        }
+    }
+
     public function moderate() {
         $external = ExternalTransaction::where([
             ['status','=','waiting'],
@@ -85,25 +118,25 @@ class PaymentController extends Controller
 
         $transaction = ExternalTransaction::createNew($data);
 
-        if($user->status == 2 && $user->pocket->frizzed_value >= Config::get('const.month_price')) {
-
-            $user->status = 1;
-            if(is_null($user->position_id)) {
-                if($reffer) {
-                    $position = Position::createNewPosition($user->id, $reffer->id);
-                    $user->position_id = $position->id;
-                    $user->save();
-                    PaymentController::monthPayment($user->id, true);
-                } else {
-                    $position = Position::createNewPosition($user->id);
-                    $user->position_id = $position->id;
-                    $user->save();
-                    PaymentController::monthPayment($user->id);
-                }
-            }
-
-        }
+        PaymentController::activate();
         return redirect('/blog');
+
+    }
+
+    public function internal(Request $request) {
+
+        $to_user = User::where('name',$request->to_username)->first();
+
+        if(!is_null($to_user)) {
+            $user = Auth::user();
+            $all = $request->all();
+            $amount = $all['internal_amount'];
+
+            if($user->pocket->sendTo($amount, $to_user)) {
+                return back();
+            }
+        }
+        return back();
 
     }
 
@@ -123,7 +156,7 @@ class PaymentController extends Controller
                 'vallet_from' => 1,
                 'vallet_to' => $all['account_to'],
                 'pocket_id' => $user->pocket_id,
-                'type' => 'withdraw'
+                'type' => 'withdraw',
             ];
 
             $transaction = ExternalTransaction::createNew($data);
@@ -140,7 +173,7 @@ class PaymentController extends Controller
         $user = Auth::user();
         return ExternalTransaction::where([
             ['pocket_id', '=', $user->pocket->id]
-        ])->get()->all();
+        ])->orderBy('updated_at','desc')->get()->all();
 
     }
 

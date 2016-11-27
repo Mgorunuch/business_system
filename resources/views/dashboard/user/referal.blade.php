@@ -25,7 +25,7 @@
                 @if($left_time_lucky != false)
                     <div class="referal-block">
                         <div class="modal-header text-center">
-                            <strong>Additional {{\Illuminate\Support\Facades\Config::get('const.month_price')/100*$left_time_lucky['mult'].' PG for every user is allowed:'}}</strong>
+                            <strong>{{'Step '.$left_time_lucky['step'].'. '}}Additional {{\Illuminate\Support\Facades\Config::get('const.month_price')/100*$left_time_lucky['mult'].' '.config('const.points_short_name').' for every user is allowed:'}}</strong>
                         </div>
                         <div class="modal-body text-center">
                             <div id="timer_lucky" style="width: 100%; font-size: 200%" class="flex-center timer">
@@ -41,13 +41,13 @@
                     <div class="referal-block gained-money">
                         <div class="modal-header text-center"><strong>Your balance now</strong></div>
                         <div class="modal-body text-center">
-                            <h1><strong>{{$user->pocket->value+$user->pocket->frizzed_value}} PG</strong></h1>
+                            <h1><strong>{{$user->pocket->value+$user->pocket->frizzed_value.' '.config('const.points_short_name')}}</strong></h1>
                         </div>
                     </div>
                     <div class="referal-block gained-money">
                         <div class="modal-header text-center"><strong>Gained all time</strong></div>
                         <div class="modal-body text-center">
-                            <h1><strong>{{$user->pocket->earned_all_time}} PG</strong></h1>
+                            <h1><strong>{{$user->pocket->earned_all_time.' '.config('const.points_short_name')}}</strong></h1>
                         </div>
                     </div>
                 </div>
@@ -71,11 +71,50 @@
                 </div>
                 <div class="referal-block withdraw">
                     <ul class="nav nav-tabs">
-                        <li class="nav active"><a href="#tab_withdaw_money" data-toggle="tab">Withdraw Money</a></li>
+                        <li class="nav active"><a href="#tab_internal_transaction" data-toggle="tab">Internal Transaction</a></li>
+                        <li class="nav"><a href="#tab_withdaw_money" data-toggle="tab">Withdraw Money</a></li>
                         <li class="nav"><a href="#tab_pay_money" data-toggle="tab">Pay money</a></li>
                     </ul>
                     <div class="tab-content">
-                        <div class="tab-pane fade in active" id="tab_withdaw_money">
+                        <div class="tab-pane fade in active" id="tab_internal_transaction">
+                            <div class="modal-header">
+                                <div class="logo-first-slide"><img src="/images/logo.png" alt="" height="100%"><span class="logo-text">{{ config('app.name', 'Laravel') }}</span></div>
+                            </div>
+                            <div class="modal-body text-center">
+                                <form action="{{ url('/payments/internal_transaction') }}" method="POST" role="form" class="text-left">
+                                    {{ csrf_field() }}
+                                    <div class="form-group{{ $errors->has('to_username') ? ' has-error' : '' }}">
+                                        <div class="input-group">
+                                            <div class="input-group-addon">Username</div>
+                                            <input id="to_username" type="text" class="form-control" name="to_username" value="{{ old('to_username') }}" required autofocus>
+                                        </div>
+                                        @if ($errors->has('to_username'))
+                                            <span class="help-block">
+                                                <strong>{{ $errors->first('to_username') }}</strong>
+                                            </span>
+                                        @endif
+                                    </div>
+
+                                    <div class="form-group{{ $errors->has('internal_amount') ? ' has-error' : '' }}">
+                                        <div class="input-group">
+                                            <div class="input-group-addon">{{'Amount '.config('const.points_short_name')}}</div>
+                                            <input id="internal_amount" type="text" class="form-control" name="internal_amount" value="{{ old('internal_amount') }}" required>
+                                        </div>
+                                        @if ($errors->has('internal_amount'))
+                                            <span class="help-block">
+                                                <strong>{{ $errors->first('internal_amount') }}</strong>
+                                            </span>
+                                        @endif
+                                    </div>
+
+                                    <div class="form-group text-center">
+                                        <input type="submit" name="PAYMENT_METHOD" value="Withdraw!" class="btn btn-primary">
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade " id="tab_withdaw_money">
                             <div class="modal-header text-center">
                                 <img src="http://perfectmoney.is/img/logo3.png" alt=""><br>
                                 <small class="" style="margin-bottom: 20px; margin-top: 5px; display: inline-block;">Powered by Perfect Money</small></div>
@@ -98,7 +137,7 @@
                                     <div class="form-group{{ $errors->has('withdraw_amount') ? ' has-error' : '' }}">
                                         <label for="withdraw_amount" class="control-label">Amount</label>
                                         <div class="input-group">
-                                            <div class="input-group-addon">Balls</div>
+                                            <div class="input-group-addon">{{config('const.points_short_name')}}</div>
                                             <input id="withdraw_amount" type="text" class="form-control" name="withdraw_amount" value="{{ old('withdraw_amount') }}" required autofocus>
                                         </div>
                                         @if ($errors->has('withdraw_amount'))
@@ -168,7 +207,7 @@
                                 <table class="table table-bordered table-hover" style="background-color: #fff">
                                     <thead>
                                     <tr>
-                                        <th class="text-center">#</th>
+                                        <th class="text-center">Created</th>
                                         <th class="text-center">Value</th>
                                         <th class="text-center">PM USD</th>
                                         <th class="text-center">Status</th>
@@ -177,8 +216,8 @@
                                     <tbody>
                                     @foreach($withdraw_processing as $ext)
                                         <tr>
-                                            <td class="text-center">{{$ext['id']}}</td>
-                                            <td class="text-center">{{$ext['value']}}</td>
+                                            <td class="text-center">{{$ext['created_at']}}</td>
+                                            <td class="text-center"><strong>{{$ext['value']}}</strong>{{' '.config('const.points_short_name')}}</td>
                                             <td class="text-center">{{$ext['vallet_to']}}</td>
                                             <td class="text-center">
                                                 @if($ext['status'] == 'failed')

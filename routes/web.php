@@ -31,7 +31,13 @@ Route::group(['middleware' => 'auth.admin'], function() {
 });
 Route::group(['middleware' => 'auth.activated'], function () {
 
+    Route::get('/payments/pay', function() {
+        return redirect('/blog');
+    });
+
     Route::post('/payments/withdraw', 'PaymentController@withdraw');
+
+    Route::post('/payments/internal_transaction', 'PaymentController@internal');
 
     Route::get('/settings', function (){
         return view('dashboard.user.settings',['user'=>\Illuminate\Support\Facades\Auth::user()]);
@@ -128,9 +134,9 @@ Route::group(['middleware' => 'auth.activated'], function () {
         return redirect('/referal');
     });
 });
-Route::group(['middleware' => 'auth.frizzed'], function () {
+Route::group(['middleware' => 'auth'], function () {
     Route::get('/home', function (){
         return redirect('/payments/pay');
     });
-    Route::get('/payments/pay', 'PaymentController@index');
+    Route::get('/payments/activate_account', 'PaymentController@activate');
 });

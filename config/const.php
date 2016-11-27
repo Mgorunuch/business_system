@@ -8,8 +8,9 @@ return [
     'ban_after_frizz' => 20, // DAYSwe
     'payment_period_seconds' => 60*60*24*30, // Payment period
     'lucky_steps' => [ // Persents month payment
-        [172800,10],
-        [172800,7.5],
-        [259200,5]
-    ]
+        [172800,10,'1/3'],
+        [172800,7.5,'2/3'],
+        [259200,5,'3/3']
+    ],
+    'points_short_name' => 'PGC'
 ];

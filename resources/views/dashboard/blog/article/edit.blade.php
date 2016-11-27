@@ -1,5 +1,17 @@
 @extends('layouts.app')
 
+@section('page_info')
+    <div class="page_info">
+        <div class="container flex-center">
+            <div class="text-center">
+                <div class="title text-center">
+                    Edit article
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
 @section('content')
     <div class="container">
         <div class="col-md-10 col-md-offset-1 article" style="background-color: #fff;">

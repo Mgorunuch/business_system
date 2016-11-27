@@ -17,9 +17,6 @@
                 <li class="">
                     <a href="{{action('ArticleController@create')}}" class="">Create new article</a>
                 </li>
-                <li class="">
-                    <a href="{{action('ArticleController@moderate')}}" class="">Moderate articles</a>
-                </li>
             </ul>
         </div>
     </nav>

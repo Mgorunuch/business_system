@@ -115,6 +115,41 @@ body {
   width: 100%;
 }
 
+
+.logo-first-slide {
+  position: relative;
+  height: 150px;
+  min-width: 400px;
+  text-align: center;
+}
+#app .logo-first-slide {
+  height: 100px;
+}
+.logo-first-slide > img {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+.logo-first-slide .logo-text {
+  color: #fff;
+  font-size: 400%;
+  font-weight: bold;
+  line-height: 150px;
+  z-index: 2;
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+#app .logo-first-slide .logo-text {
+  color: #282828;
+  font-size: 250%;
+  font-weight: lighter;
+  line-height: 100px;
+}
+
 .main-settings-content {
   background: #fff;
   margin-top: 15px;

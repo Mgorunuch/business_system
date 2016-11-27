@@ -1,11 +1,20 @@
 @extends('layouts.app')
 
+@section('page_info')
+    <div class="page_info">
+        <div class="container flex-center">
+            <div class="text-center">
+                <div class="title text-center">
+                    Create new article
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
 @section('content')
     <div class="container">
         <div class="col-md-10 col-md-offset-1 article" style="background-color: #fff;">
-            <div class="modal-header">
-                <strong>Create new article</strong>
-            </div>
             <form action="{{action('ArticleController@store')}}" method="post" class="modal-body" enctype="multipart/form-data">
                 {{ csrf_field() }}
                 <div class="form-group">

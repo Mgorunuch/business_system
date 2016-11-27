@@ -58,16 +58,16 @@ class User extends Authenticatable
 
     public function getReferals($count=false) {
         if(!$count) {
-            return DB::table('users')->where('reffer_id',$this->id)->select(['id','name','email','status'])->get()->all();
+            return DB::table('users')->where('reffer_id',$this->id)->select(['id','name','email','status'])->orderBy('created_at','asc')->get()->all();
         } else {
-            return DB::table('users')->where('reffer_id',$this->id)->limit($count)->select(['id','name','email','status'])->get()->all();
+            return DB::table('users')->where('reffer_id',$this->id)->limit($count)->select(['id','name','email','status'])->orderBy('created_at','asc')->get()->all();
         }
     }
 
     public function getBanTimeDays($html=false) {
         $now = Carbon::today();
         $days_ban = Config::get('const.ban_after_frizz');
-        $ban_day = Carbon::parse($now);
+        $ban_day = Carbon::parse($this->updated_at);
         $ban_day->day += $days_ban;
 
         $diff = $ban_day->diffInDays($now);
@@ -130,12 +130,13 @@ class User extends Authenticatable
         $counts = [];
 
         $pos_ids = [];
-        $pos = [[$this->position]];
+        $pos = [[$this->position],[],[],[],[],[],[],[],[]];
         $itterations = 9;
         for($j = 0; $j < $itterations; $j++) {
             for($l = 0; $l < count($pos[$j]); $l++) {
-                if($j != ($itterations-1))
+                if($j != ($itterations-1)) {
                     $pos[] = $pos[$j][$l]->childrens();
+                }
                 foreach ($pos[$j][$l]->childrens(['id']) as $p) {
                     $pos_ids[] = $p['id'];
                 }
@@ -183,7 +184,8 @@ class User extends Authenticatable
                     $diff = $step_time->diffInSeconds($now);
                     return [
                         'left_time' => $diff,
-                        'mult' => $step[1]
+                        'mult' => $step[1],
+                        'step' => $step[2]
                     ];
                 }
             }

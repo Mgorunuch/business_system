@@ -1,0 +1,444 @@
+body {
+  color: #282828;
+}
+h1,h2,h3 {
+    font-family: 'Roboto Slab', sans-serif;
+}
+.text-color-gold {
+    color: #ffd700;
+}
+.text-color-grey {
+  color: #e6e6e6;
+}
+.font-size-200 {
+  font-size: 200%;
+}
+.font-size-250 {
+  font-size: 250%;
+}
+.font-size-300 {
+  font-size: 300%;
+}
+.full-width {
+  width: 100%;
+}
+.flex-wrap {
+  flex-wrap: wrap;
+}
+.flex-grow-content-1 > * {
+  flex-grow: 1;
+}
+.inner-inline-block.vertical-center > * {
+  vertical-align: middle;
+}
+.inner-inline-block:before, .inner-inline-block:after {
+  display: none;
+}
+.margin-bottom-small {
+    margin-bottom: 7px;
+}
+.margin-bottom-medium {
+    margin-bottom: 14px;
+}
+.margin-bottom-large {
+    margin-bottom: 20px;
+}
+.margin-right-small {
+    margin-right: 7px;
+}
+.margin-right-medium {
+    margin-right: 14px;
+}
+.margin-right-large {
+    margin-right: 20px;
+}
+.btn {
+    border-radius: 2px;
+    transition: 500ms;
+}
+.btn.btn-login, .btn.btn-register {
+    width: 150px;
+    text-align: center;
+}
+.btn.btn-login {
+    font-size: 140%;
+    background-color: transparent;
+    border: solid 2px #fff;
+    color: #fff;
+    font-weight: bold;
+    padding: .5em 1.3em;
+}
+.btn.btn-login:hover {
+    background: #fff;
+    color: #282828;
+}
+.btn.btn-register {
+    font-size: 140%;
+    background-color: #7cb5dd;
+    border: solid 2px #7cb5dd;
+    color: #fff;
+    font-weight: bold;
+    padding: .5em 1.3em;
+}
+.btn.btn-register:hover {
+    background: #fff;
+    color: #282828;
+    border-color: #fff;
+}
+.btn.btn-signUP {
+    background: transparent;
+    border: solid 2px #282828;
+    color: #282828;
+    font-size: 140%;
+    margin-top: 10px;
+    font-weight: bold;
+    width: 150px;
+}
+.btn.btn-signUP:hover {
+    background: #000;
+    color: #fff;
+}
+.btn.btn-signUP.contact-form {
+  max-width: 200px;
+  font-size: 110%;
+  margin-bottom: -10px;
+}
+.btn.btn-calculator {
+  border-radius: 0;
+}
+.btn.btn-calculator:hover, .btn.btn-calculator.active {
+  background: #7cb5dd;
+  color: #fff;
+  box-shadow: 0 0 0 0 transparent;
+}
+.form-control {
+  border-radius: 0;
+  border-width: 1px;
+}
+.navbar.top-navbar {
+    background: transparent;
+    border-color: transparent;
+    color: #fff;
+}
+.navbar.top-navbar ul li a {
+    color: #fff;
+    font-weight: bold;
+    transition: 0.5s;
+}
+.navbar-fixed-top {
+  transition: 0.5s;
+}
+.navbar-fixed-top.active {
+  background-color: rgba(255,255,255,0.8);
+  transition: 0.5s;
+}
+.navbar-fixed-top.active ul li a {
+    color: #282828;
+    font-weight: bold;
+    transition: 0.5s;
+}
+.logo-first-slide {
+    position: relative;
+    height: 150px;
+    min-width: 400px;
+    text-align: center;
+}
+.logo-first-slide > img {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+.logo-first-slide .logo-text {
+    color: #fff;
+    font-size: 400%;
+    font-weight: bold;
+    line-height: 150px;
+    z-index: 2;
+    position: absolute;
+    left: 0;
+    right: 0;
+}
+#first_block {
+    overflow: hidden;
+    transition: 500ms;
+    position: relative;
+    min-height: 90vh;
+    background-color: rgba(0,0,0,.6);
+    padding: 30px 0;
+}
+#first_block #counter {
+  position: absolute;
+  bottom: 30px;
+  left: 0;
+  right: 0;
+}
+#first_block .fake-head {
+  transition: .7;
+}
+#first_block #head-image {
+    z-index: -1;
+    background: url('http://st-gdefon.gallery.world/wallpapers_original/417493_gallery.world.jpg?9b30f88865a6ee068aa988b568d8492f') #0f0f0f bottom center;
+    background-size: cover;
+}
+#first_block .text-container {
+}
+#first_block .logo {
+    font-size: 400%;
+}
+#first_block .slogan {
+    display: inline-block;
+    color: #fff;
+    margin-bottom: 60px;
+    font-size: 150%;
+    font-weight: lighter;
+}
+#counter {
+    padding: 20px 0;
+    font-size: 150%;
+    font-family: 'Roboto', sans-serif;
+    color: #fff;
+}
+#counter #counter-changer {
+  background: #fff;
+  color:#282828;
+  font-size: 140%;
+  border-radius: 3px;
+  padding: 10px 30px;
+  box-shadow: inset 0 0 7px 0 rgba(0,0,0,.3);
+  display: inline-block;
+  border: solid 1px #e6e6e6;
+}
+#marketing {
+    background-color: rgba(255,255,255,.9);
+    padding: 60px 0;
+    position: relative;
+}
+#marketing .bg-image {
+    background: url('/images/landing/marketing.jpg') center fixed;
+    background-size: cover;
+    z-index: -1;
+}
+#marketing .head {
+    margin-bottom: 40px;
+}
+#marketing .main-text {
+    padding: 15px;
+    padding-left: 40px;
+}
+#marketing .video {
+    padding: 15px;
+    padding-right: 40px;
+}
+#advantages {
+    background-size: cover;
+    padding: 60px 0;
+}
+#advantages .head {
+    margin-bottom: 30px;
+}
+#advantages .advantage {
+    margin: 15px;
+    background: #fff;
+    padding: 0;
+    border: solid 2px #e6e6e6;
+    width: 345px;
+    height: 330px;
+    transition: 0.5s;
+    transform-style: preserve-3d;
+    transform: rotateY(0deg);
+}
+#advantages .advantage:first-child {
+  margin-left: -30px;
+  margin-right: 40px;
+}
+#advantages .advantage:last-child {
+  margin-right: -30px;
+  margin-left: 40px;
+}
+#advantages .advantage:hover {
+    transform: rotateY(180deg);
+    border-color: #7cb5dd;
+}
+#advantages .advantage .image {
+  display: inline-block;
+  width: 100%;
+  font-size: 500%;
+  position: relative;
+}
+#advantages .advantage .front, #advantages .advantage .back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  padding: 20px;
+  background: #fff;
+  backface-visibility: hidden;
+}
+#advantages .advantage .back {
+  transform: rotateY(180deg);
+  background-color: #7cb5dd;
+  color: #fff;
+}
+#steps {
+    padding: 60px 0;
+    background: rgba(255,255,255,.8);
+    position: relative;
+}
+#steps .bg-image {
+    background: url('/images/landing/3steps.jpg') center fixed;
+    background-size: cover;
+    z-index: -1;
+}
+#steps .head {
+    margin-bottom: 30px;
+}
+#steps .step {
+    margin: 15px;
+    background: #fff;
+    padding: 25px;
+    border: solid 1px #eaeaea;
+    height: 250px;
+    font-size: 120%
+}
+#steps .step .image {
+    display: inline-block;
+    width: 100%;
+    font-size: 400%;
+    position: relative;
+    margin-top: -10px;
+}
+#steps .step p {
+  padding: 0 25px;
+}
+#calculator {
+  padding: 60px 0;
+  background: #fff;
+  width: 100%;
+}
+#calculator .head {
+    margin-bottom: 30px;
+}
+#calculator .calculator-container {
+
+}
+#calculator .nav-tabs li {
+  flex-grow: 1;
+  text-align: center;
+}
+#calculator .nav-tabs .nav-left a, #calculator .nav-tabs .nav-right a  {
+  outline: none;
+}
+#calculator .nav-tabs li a {
+    color: #282828;
+}
+#calculator .tab-content li {
+  text-align: center;
+}
+#calculator .tab-content {
+  height: 150px;
+  position: relative;
+}
+#calculator .tab-content .tab-pane {
+  border: solid 1px #eaeaea;
+  padding: 20px;
+  position: absolute;
+  width: 400px;
+  text-align: center;
+  top: 0;
+  left: 0;
+  border-top: 0;
+  font-family: 'Roboto';
+  font-weight: bold;
+  font-size: 300%;
+}
+#calculator .tab-content .tab-pane:nth-child(1) {
+  left: 0%;
+}
+#calculator .tab-content .tab-pane:nth-child(2) {
+  left: 5%;
+}
+#calculator .tab-content .tab-pane:nth-child(3) {
+  left: calc(30% - 200px);
+}
+#calculator .tab-content .tab-pane:nth-child(4) {
+  left: calc(40% - 200px);
+}
+#calculator .tab-content .tab-pane:nth-child(5) {
+  left: calc(50% - 200px);
+}
+#calculator .tab-content .tab-pane:nth-child(6) {
+  left: calc(60% - 200px);
+}
+#calculator .tab-content .tab-pane:nth-child(7) {
+  left: calc(70% - 200px);
+}
+#calculator .tab-content .tab-pane:nth-child(8) {
+  left: calc(95% - 400px);
+}
+#calculator .tab-content .tab-pane:nth-child(9) {
+  left: calc(100% - 400px);
+}
+
+.calculator-container {
+  font-family: 'Roboto', sans-serif;
+}
+.calulator-result {
+  padding: 30px 0;
+  line-height: 30px;
+}
+#contactus {
+  background: rgba(255,255,255,0.8);
+  padding: 30px 0;
+  position: relative;
+}
+#contactus .bg-image {
+  background: url('/images/landing/contact-us.jpg') top center fixed;
+  background-size: cover;
+  z-index: -1;
+}
+#contactus .head {
+    margin-bottom: 30px;
+}
+#contactus .form-head-text {
+  margin-bottom: 40px;
+  font-size: 120%;
+}
+#contactus .main-text {
+    padding: 25px;
+    background: #fff;
+}
+#contactus .form-group {
+    width: 100%;
+}
+footer {
+  margin-top: 0;
+}
+.nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
+  background: #fff;
+  outline: none;
+  border-radius: 0;
+}
+.black-style {
+  background: url('http://365psd.ru/images/backgrounds/bg-dark-4781.jpg') fixed!important;
+}
+.black-style .head {
+  color: #fff;
+}
+#calculator.black-style {
+  color: #fff;
+}
+#calculator.black-style .btn-calculator {
+  color: #282828;
+}
+#calculator.black-style .btn-calculator:hover,#calculator.black-style .btn-calculator.active {
+  color: #fff;
+}
+footer.black-style {
+  color: #fff;
+}

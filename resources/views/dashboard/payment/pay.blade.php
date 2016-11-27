@@ -7,7 +7,7 @@
                 <div class="title text-center">
                     Activation page
                 </div>
-                <span class="article-head-author">To activate account your balance must be more then 10$</span>
+                <span class="article-head-author">To activate account your balance must be 10{{' '.config('const.points_short_name')}}</span>
             </div>
         </div>
     </div>
@@ -27,6 +27,25 @@
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
                     <div class="panel-body text-center">
+                        <select name="choose_type" id="type" class="form-control" onchange="changePaymentType(this.value)">
+                            <option value="pm">
+                                Perfect Money
+                            </option>
+                            <option value="piligrim">
+                                Internal Balance
+                            </option>
+                        </select>
+                    </div>
+                    <hr class="reset-margin">
+
+                    <div id="piligrim" class="panel-body text-center" style="display: none;">
+                        <div class="logo-first-slide"><img src="/images/logo.png" alt="" height="100%"><span class="logo-text">{{ config('app.name', 'Laravel') }}</span></div>
+                        <form action="{{ url('/payments/activate_account') }}">
+                            {{ csrf_field() }}
+                            <input type="submit" name="" value="Activate" class="btn btn-primary" style="margin-top: 20px;">
+                        </form>
+                    </div>
+                    <div id="pm" class="panel-body text-center">
                         <img src="http://perfectmoney.is/img/logo3.png" alt=""><br>
                         <small class="" style="margin-bottom: 20px; margin-top: 5px; display: inline-block;">Powered by Perfect Money</small>
                         <form role="form" method="POST" action="https://perfectmoney.is/api/step1.asp">
@@ -68,4 +87,14 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('scripts')
+    <script>
+        function changePaymentType(to) {
+            document.getElementById('pm').style.display = 'none';
+            document.getElementById('piligrim').style.display = 'none';
+            document.getElementById(to).style.display = 'block';
+        }
+    </script>
 @endsection

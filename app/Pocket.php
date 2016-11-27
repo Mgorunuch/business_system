@@ -15,6 +15,9 @@ class Pocket extends Model
         return $this->hasMany(ExternalTransaction::class, 'pocket_id', 'id');
     }
 
+    /**
+     * @return mixed
+     */
     public function full_ballance() {
         return $this->frizzed_value + $this->value;
     }
@@ -54,8 +57,9 @@ class Pocket extends Model
      */
     public function check_balance() {
         $month_payment = Config::get('const.month_price');
-        if($this->frizzed_value == $month_payment) return true;
-        else {
+        if($this->frizzed_value == $month_payment) {
+            return true;
+        } else {
             if($this->balance_pocket()) {
                 return true;
             } else {
@@ -78,7 +82,9 @@ class Pocket extends Model
          *  3. Если полный баланс меньше месячной оплаты
          */
         if($this->frizzed_value == $month_payment) {
+
             return true;
+
         } elseif ($this->frizzed_value > $month_payment) { //1
 
             $need = $this->frizzed_value - $month_payment;
@@ -103,5 +109,27 @@ class Pocket extends Model
             return false;
 
         }
+    }
+
+    /**
+     * @param $amount
+     * @param User $user_to
+     * @return bool
+     */
+    public function sendTo($amount, User $user_to) {
+        if($this->user->status != 1) return false;
+
+        $ballance = $this->value + $this->frizzed_value;
+
+        if($ballance >= $amount) {
+            $data = [
+                'pocket_from_id' => $this->id,
+                'pocket_to_id' => $user_to->pocket->id,
+                'value' => $amount
+            ];
+            $transaction = InternalTransaction::createNew($data);
+            return true;
+        }
+        return false;
     }
 }
