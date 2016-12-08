@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Classes\Mailer;
 use App\Pocket;
 use App\User;
 use App\Http\Controllers\Controller;
@@ -82,6 +83,10 @@ class RegisterController extends Controller
         $pocket = Pocket::create();
         $user->pocket_id = $pocket->id;
         $user->save();
+        // TODO: DELETE AFTER TEST WEEK
+        $user->pocket->add_balance(10);
+        // DELETE AFTER TEST WEEK
+        Mailer::send_email_registred($user);
 
         return $user;
     }

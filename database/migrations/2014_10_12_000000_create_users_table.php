@@ -16,7 +16,7 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
             $table->string('profile_image')->default('/images/default/profile.png');
-            $table->string('name')->unique();
+            $table->string('name');
             $table->string('full_name')->nullable();
             $table->string('country_code')->nullable();
             $table->string('city')->nullable();
@@ -25,7 +25,7 @@ class CreateUsersTable extends Migration
             $table->integer('pocket_id')->nullable();
             $table->integer('position_id')->nullable();
             $table->integer('reffer_id')->nullable()->default(1);
-            $table->string('email')->unique();
+            $table->string('email');
             $table->string('password');
             $table->integer('status')->default(2);
             $table->rememberToken();

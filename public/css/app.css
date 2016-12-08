@@ -5770,6 +5770,44 @@ button.close {
   .hidden-print {
     display: none !important; } }
 
+.loading {
+  min-height: 250px;
+  padding-top: 100px; }
+
+.spinner_def {
+  width: 50px;
+  height: 50px;
+  position: relative;
+  margin: 0 auto; }
+  .spinner_def .double-bounce1, .spinner_def .double-bounce2 {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: #282828;
+    opacity: 0.6;
+    position: absolute;
+    top: 0;
+    left: 0;
+    -webkit-animation: sk-bounce 2.0s infinite ease-in-out;
+    animation: sk-bounce 2.0s infinite ease-in-out; }
+  .spinner_def .double-bounce2 {
+    -webkit-animation-delay: -1.0s;
+    animation-delay: -1.0s; }
+
+@-webkit-keyframes sk-bounce {
+  0%, 100% {
+    -webkit-transform: scale(0); }
+  50% {
+    -webkit-transform: scale(1); } }
+
+@keyframes sk-bounce {
+  0%, 100% {
+    transform: scale(0);
+    -webkit-transform: scale(0); }
+  50% {
+    transform: scale(1);
+    -webkit-transform: scale(1); } }
+
 @-webkit-keyframes shadow_show {
   0% {
     box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2); }
@@ -5864,6 +5902,10 @@ body {
 .full-width {
   width: 100%; }
 
+.beautyimg {
+  background: url("/images/landing/3steps1.jpg") center fixed;
+  background-size: cover; }
+
 .logo-first-slide {
   position: relative;
   height: 150px;
@@ -5953,7 +5995,8 @@ body {
 
 .navbar.top-navbar {
   border-bottom: solid 1px #C0C0C0;
-  background: rgba(255, 255, 255, 0.9); }
+  background: rgba(255, 255, 255, 0.9);
+  z-index: 99999999; }
 
 .nav.navbar-blog .container {
   display: -webkit-box;
@@ -6178,5 +6221,20 @@ footer {
 
 body.mce-fullscreen .navbar-fixed-top {
   display: none; }
+
+.pagination {
+  background-color: #fff; }
+
+.translated-ltr #app .navbar.top-navbar.navbar-fixed-top {
+  top: 40px !important; }
+
+.translated-ltr .navbar.top-navbar.navbar-fixed-top {
+  top: 40px !important; }
+
+.goog-te-gadget-simple {
+  border: solid 0 !important;
+  background-color: transparent !important; }
+  .goog-te-gadget-simple > img {
+    display: none; }
 
 /*# sourceMappingURL=app.css.map */

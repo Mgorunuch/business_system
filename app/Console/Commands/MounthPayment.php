@@ -11,6 +11,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Auth;
 
 class MounthPayment extends Command
 {
@@ -58,10 +59,10 @@ class MounthPayment extends Command
                 ['status', '=', 1]
             ])->first();
 
-        if( !empty($status) ) {
+        /*if( !empty($status) ) {
             print "Status is not Empty \n";
             exit;
-        }
+        }*/
 
         DB::table('statuses')
             ->where('name', 'month_payment')
@@ -69,14 +70,13 @@ class MounthPayment extends Command
 
 
         $users = DB::table('users')
-            ->where([
-                ['status','=','working']
-            ])
             ->leftJoin('pockets','users.pocket_id','pockets.id')
             ->where([
+            	['position_id','!=',null],
                 ['pockets.last_payment','<',PAYMENT_BOUNDARY],
                 ['pockets.id','!=',1]
             ])->orWhere([
+            	['position_id','!=',null],
                 ['pockets.last_payment','=',null],
                 ['pockets.id','!=',1]
             ])->get();

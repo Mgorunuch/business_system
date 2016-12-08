@@ -5,7 +5,7 @@
         <div class="container flex-center">
             <div class="text-center">
                 <div class="title text-center">
-                    Create new article
+                    Create a new article
                 </div>
             </div>
         </div>

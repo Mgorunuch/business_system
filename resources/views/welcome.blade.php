@@ -1,7 +1,7 @@
 <html lang="en"><head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=1200">
 
         <!-- CSRF Token -->
         <meta name="csrf-token" content="XpNIlquyGRnuSOLQP3ORcDh8qcjxmr1a2Acq8Lzy">
@@ -19,6 +19,25 @@
 
         <link rel="stylesheet" href="/css/welcome.css">
         <link rel="stylesheet" href="/css/libs/animate.css">
+
+
+        <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
+        <link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="manifest" href="/manifest.json">
+        <meta name="msapplication-TileColor" content="#ffffff">
+        <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+        <meta name="theme-color" content="#ffffff">
     </head>
     <body style="">
         <nav class="navbar top-navbar navbar-default navbar-fixed-top">
@@ -43,18 +62,26 @@
                     <!-- Right Side Of Navbar -->
                     <ul class="nav navbar-nav navbar-right">
                         <!-- Authentication Linkes -->
-                        <li><a href="#first_block">Home</a></li>
-                        <li><a href="#marketing">Marketing</a></li>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#marketing">About Us</a></li>
                         <li><a href="#advantages">Advantages</a></li>
                         <li><a href="#calculator">Calculator</a></li>
-                        <li><a href="#partners">Partners</a></li>
+                        <li><a href="#partners" data-toggle="modal" data-target="#partners">Partners</a></li>
                         <li><a href="#contactus">Contact Us</a></li>
+                        <li><a href="#">
+                                <div id="google_translate_element"></div>
+                                <script type="text/javascript">
+                                    function googleTranslateElementInit() {
+                                        new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+                                    }
+                                </script>
+                                <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script></a></li>
                     </ul>
                 </div>
             </div>
         </nav>
         <div id="header_waypoint"></div>
-        <div id="first_block">
+        <div id="home">
             <div id="head-image" class="abs-full-sizes"></div>
             <div class="absolute-center" id="paralax-particles">
                 <div id="particles"><canvas class="particles-js-canvas-el" style="width: 100%; height: 100%;" width="1910" height="955"></canvas></div>
@@ -72,25 +99,33 @@
                 </div>
             </div>
             <div id="counter" class="flex-abs-center">
-                <span style="display: inline-block; margin-right: 10px;">REGISTRATIONS: </span><strong class="counter margin-right-small" id="counter-changer">{{\App\User::all()->count() + 5000}}</strong>
+                <span style="display: inline-block; margin-right: 10px;">REGISTRATIONS: </span><strong class="counter margin-right-small" id="counter-changer">{{\App\User::all()->count() + 1692}}</strong>
             </div>
         </div>
         <div id="marketing" class="flex-abs-center">
             <div class="bg-image abs-full-sizes"></div>
             <div class="container">
                 <div class="head text-center">
-                    <h2 class="reset-margin"><strong>Marketing</strong></h2>
+                    <h2 class="reset-margin"><strong>About Us</strong></h2>
                 </div>
                 <div>
-                    <div class="row">
+                    <div class="row flex-full-sizes">
                         <div class="col-md-6 video">
-                            <iframe src="https://www.youtube.com/embed/RWn6AjDc_hI" allowfullscreen="" width="100%" height="315" frameborder="0"></iframe>
+                            <!-- <iframe src="https://www.youtube.com/embed/RWn6AjDc_hI" allowfullscreen="" width="100%" height="315" frameborder="0"></iframe> -->
+                            <img src="/images/landing/image.png" width="100%" alt="" style="border: solid 2px #000;">
                         </div>
                         <div class="col-md-6 main-text">
-                            <h3 class="reset-margin"><strong>Some title</strong></h3>
-                            <div class="clearfix"></div><br>
-                            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
-                            <div class="text-left"><button class="btn btn-signUP" onclick="window.location = '/register';">Sign Up</button></div>
+                            <p>
+                            <ul style="padding-left: 20px;">
+                              <li>A community of people who want to help in creating your own business</li>
+                              <li>We will teach you how to properly start and expand your</li>
+                              <li>We created a platform to help you communicate with other members of the community and share experience.</li>
+                              <li>Besides studies we also regularly post articles in our blog that will help you speed up your business development.</li>
+                              <li>We created a unique system and thanks to it you can earn money for the start of your own business in a short period of time.</li>
+                            </ul>
+                            <br>
+                            </p>
+                            <div class="text-left" style="margin-top: 24px;"><button class="btn btn-signUP" onclick="window.location = '/register';">Sign Up</button></div>
                         </div>
                     </div>
                 </div>
@@ -103,38 +138,44 @@
                 </div>
                 <div class="main-text">
                     <div class="row inner-inline-block text-center advantages-container">
-                        <div class="col-md-3 advantage">
+                        <div class="col-md-3 advantage"  data-toggle="modal" data-target="#advantage1">
                           <div class="front flex-abs-center">
                             <div>
                               <div class="image">
                                 <i class="fa fa-line-chart" aria-hidden="true"></i>
                               </div>
-                                <h4><strong>Fast grow</strong></h4>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facere reiciendis non placeat culpa odit voluptates, voluptas, in omnis nam sapiente incidunt, ipsam</p>
+                                <h4><strong>Fast growth</strong></h4>
+                                <p>It is an option you get during the first week after activating your personal account...</p><br><br>
+                                <p><strong>Click for more details</strong></p>
                             </div>
                           </div>
-                          <div class="back flex-abs-center">
+                          <div class="back flex-abs-center text-left">
                             <p>
-                              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facere reiciendis non placeat culpa odit voluptates, voluptas, in omnis nam sapiente incidunt, ipsam deleniti dolor ducimus harum adipisci dolore quam mollitia!
+                            It is an option you get during the first week after activating your personal account. It lets you get an extra 0.5  to 1 PGC for every partner you directly invite into your structure.<br><br>
+                              It is divided into 3 steps: <br>
+1)  Step 1/3. 2 days, extra profit per person 1 PGC <br>
+2)  Step 2/3. 2 days, extra profit per person 0.75 PGC <br>
+3)  Step 3/3. 3 days, extra profit per person 0.5 PGC
                             </p>
                           </div>
                       </div>
-                        <div class="col-md-3 advantage">
+                        <div class="col-md-3 advantage" data-toggle="modal" data-target="#advantage2">
                           <div class="front flex-abs-center">
                             <div>
                               <div class="image">
                                 <i class="fa fa-graduation-cap" aria-hidden="true"></i>
-                              </div><h4><strong>Graduate</strong></h4>
-                              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facere reiciendis non placeat culpa odit voluptates, voluptas, in omnis nam sapiente incidunt, ipsam</p>
+                              </div><h4><strong>Learning</strong></h4>
+                              <p>We will teach you how to properly start building your business and become successful in it...</p><br><br>
+                                <p><strong>Click for more details</strong></p>
                             </div>
                           </div>
-                          <div class="back flex-abs-center">
+                          <div class="back flex-abs-center text-left">
                             <p>
-                              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facere reiciendis non placeat culpa odit voluptates, voluptas, in omnis nam sapiente incidunt, ipsam deleniti dolor ducimus harum adipisci dolore quam mollitia!
+                              We will teach you how to properly start building your business and become successful in it. Within the first 2 months after activating your account you will get one lesson every week focusing on how to start a profitable business of your own.
                             </p>
                           </div>
                       </div>
-                      <div class="col-md-3 advantage">
+                      <div class="col-md-3 advantage"  data-toggle="modal" data-target="#advantage3">
                         <div class="front flex-abs-center">
                           <div>
                             <div class="image">
@@ -142,13 +183,14 @@
                             </div>
                             <h4><strong>Meet new people</strong></h4>
                             <p>
-                              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facere reiciendis non placeat culpa odit voluptates, voluptas, in omnis nam sapiente incidunt, ipsam
-                            </p>
+                             In our business community you can get in touch with others like you, with those who want to be their own boss...
+                            </p><br><br>
+                                <p><strong>Click for more details</strong></p>
                           </div>
                         </div>
                         <div class="back flex-abs-center">
                           <p>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facere reiciendis non placeat culpa odit voluptates, voluptas, in omnis nam sapiente incidunt, ipsam deleniti dolor ducimus harum adipisci dolore quam mollitia!
+                            In our business community you can get in touch with others like you, with those who want to be their own boss. You can find partners and create your team that will lead you to your business goals.
                           </p>
                         </div>
                     </div>
@@ -201,7 +243,7 @@
                                 <i class="fa fa-handshake-o" aria-hidden="true" style="color: #282828;"></i>
                               </div>
                               <p class="">
-                                Start <strong>Meet</strong>, <strong>Learn</strong>, <strong>Make Money</strong>
+                                Start to <strong>Meet</strong>, <strong>Learn</strong>, <strong>Make Money</strong>
                               </p>
                             </div>
                           </div>
@@ -216,7 +258,7 @@
       <div id="calculator" class="black-style">
         <div class="container">
           <div class="head text-center">
-            <h2 class="reset-margin"><strong>Calculator</strong></h2>
+            <h2 class="reset-margin"><strong>Profit Calculator</strong></h2>
           </div>
           <div class="calculator-container">
             <div class="row">
@@ -258,7 +300,7 @@
                     <h2 class="reset-margin"><strong>Contact Us</strong></h2>
                 </div>
                 <div class="main-text col-md-6 col-md-offset-3 text-center">
-                  <h3 class="reset-margin form-head-text">Do you have any questions? We have answer on it.</h3>
+                  <h3 class="reset-margin form-head-text">Do you have any questions? We have answer on all.</h3>
                     <form action="" class="row text-left">
                         <label for="name" class=" col-md-6">
                             Name:
@@ -269,7 +311,7 @@
                             <input class="form-control" placeholder="email" type="text">
                         </label>
                         <label for="email" class=" col-xs-12">
-                            Email:
+                            Messages:
                             <textarea name="" id="" cols="30" rows="10" class="form-control"></textarea>
                         </label>
                         <div class="text-left col-xs-12">
@@ -292,6 +334,94 @@
         <script src="/js/waypoints/waypoints.min.js"></script>
         <script src="/js/mg-paralax/mg-paralax.js"></script>
 
+
         <script src="/js/welcome.js"></script>
-  </body>
+
+
+        <div class="modal fade" id="partners" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+          <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
+                    <h4 class="modal-title" id="myModalLabel">Partners proposal <strong id="popup-edit-category-name"></strong></h4>
+                </div>
+                <div class="col-lg-12" style="margin-top: 10px;">
+                  <p>Do you want to become a partner of Piligrim Group community? Fill out the form below and we will email you the special participation conditions.</p>
+                </div>
+                <div class="modal-body text-center">
+                  <form action="" class="row text-left">
+                        <label for="name" class=" col-md-6">
+                            Name:
+                            <input class="form-control" placeholder="name" type="text">
+                        </label>
+                        <label for="email" class=" col-md-6">
+                            Email:
+                            <input class="form-control" placeholder="email" type="text">
+                        </label>
+                        <label for="email" class=" col-xs-12">
+                            Messages:
+                            <textarea name="" id="" cols="30" rows="5" class="form-control"></textarea>
+                        </label>
+                        <div class="text-left col-xs-12">
+                            <button class="btn btn-signUP contact-form">
+                                Send message
+                            </button>
+                        </div>
+                    </form>
+                </div>
+              </div>
+          </div>
+        </div>
+        <div class="modal fade" id="advantage1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+          <div class="modal-dialog" role="document">
+              <div class="modal-content" style="background-color: #7cb5dd; color: #fff;">
+                <div class="modal-header text-center">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
+                    <h4 class="modal-title" id="myModalLabel"><strong>Fast growth</strong></h4>
+                </div>
+                <div class="modal-body text-center">
+                  <p>
+                    It is an option you get during the first week after activating your personal account. It lets you get an extra 0.5  to 1 PGC for every partner you directly invite into your structure.<br><br>
+                      It is divided into 3 steps: <br>
+  1)  Step 1/3. 2 days, extra profit per person 1 PGC <br>
+  2)  Step 2/3. 2 days, extra profit per person 0.75 PGC <br>
+  3)  Step 3/3. 3 days, extra profit per person 0.5 PGC
+                  </p>
+                </div>
+              </div>
+          </div>
+        </div>
+        <div class="modal fade" id="advantage2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+          <div class="modal-dialog" role="document">
+              <div class="modal-content" style="background-color: #7cb5dd; color: #fff;">
+                <div class="modal-header text-center">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
+                    <h4 class="modal-title" id="myModalLabel"><strong>Learning</strong></h4>
+                </div>
+                <div class="modal-body text-center">
+                  <p>
+                    We will teach you how to properly start building your business and become successful in it. Within the first 2 months after activating your account you will get one lesson every week focusing on how to start a profitable business of your own.
+                  </p>
+                </div>
+              </div>
+          </div>
+        </div>
+        <div class="modal fade" id="advantage3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+          <div class="modal-dialog" role="document">
+              <div class="modal-content" style="background-color: #7cb5dd; color: #fff;">
+                <div class="modal-header text-center">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"></span></button>
+                    <h4 class="modal-title" id="myModalLabel"><strong>Meet new people</strong></h4>
+                </div>
+                <div class="modal-body text-center">
+                  <p>
+                    In our business community you can get in touch with others like you, with those who want to be their own boss. You can find partners and create your team that will lead you to your business goals.
+                  </p>
+                </div>
+              </div>
+          </div>
+        </div>
+
+
+    </body>
 </html>

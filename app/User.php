@@ -79,20 +79,39 @@ class User extends Authenticatable
         }
     }
 
+    public function getReferalByType($type, $action = 'count') {
+        if($type == 'working') {
+            $return = DB::table('users')->where([
+                ['reffer_id', '=', $this->id],
+                ['status', '=', 1]
+            ]);
+        } elseif($type == 'frizzed') {
+            $return = DB::table('users')->where([
+                ['reffer_id', '=', $this->id],
+                ['status', '=', 2]
+            ]);
+        } elseif($type == 'banned') {
+            $return = DB::table('users')->where([
+                ['reffer_id', '=', $this->id],
+                ['status', '=', 0]
+            ]);
+        }
+
+        if(is_null($return)) return false;
+
+        if($action == 'models') {
+            return $return->get()->all();
+        } else {
+            return $return->count();
+        }
+    }
+
     public function getReferalCounts() {
         $counts = [];
-        $counts['working'] = DB::table('users')->where([
-            ['reffer_id','=',$this->id],
-            ['status','=',1]
-        ])->count();
-        $counts['frizzed'] = DB::table('users')->where([
-            ['reffer_id','=',$this->id],
-            ['status','=',2]
-        ])->count();
-        $counts['banned'] = DB::table('users')->where([
-            ['reffer_id','=',$this->id],
-            ['status','=',0]
-        ])->count();
+        $counts['working'] = $this->getReferalByType('working');
+        $counts['frizzed'] = $this->getReferalByType('frizzed');
+        $counts['banned'] = $this->getReferalByType('banned');
+        $counts['all'] = $counts['working'] + $counts['frizzed'] + $counts['banned'];
         return $counts;
     }
 
@@ -262,8 +281,18 @@ class User extends Authenticatable
         $this->save();
     }
 
+    public function activate_user() {
+        $this->status = 1;
+        $this->save();
+    }
+
     public function ban_user() {
         $this->position->deletePosition();
+        $refers = User::where('refer_id', $this->id)->get()->all();
+        foreach($refers as $ref) {
+            $ref->reffer_id = 1;
+            $ref->save();
+        }
         $this->status = 0;
         $this->save();
     }

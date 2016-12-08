@@ -7,7 +7,7 @@
                 <i class="fa fa-users" aria-hidden="true"></i>
             </div>
             <div class="title">
-                Referal program
+                Referral program
             </div>
         </div>
         <div class="container">
@@ -38,49 +38,46 @@
                     </div>
                 @endif
                 <div class="flex-row-2">
-                    <div class="referal-block gained-money">
-                        <div class="modal-header text-center"><strong>Your balance now</strong></div>
+                    <div class="referal-block gained-money" id="ballanceContainer">
+                        <div class="modal-header text-center"><strong>Your balance now</strong><div class="actions pull-right"><i class="fa fa-refresh" aria-hidden="true" onclick="updateBallance();" style="cursor: pointer;"></i></div></div>
                         <div class="modal-body text-center">
-                            <h1><strong>{{$user->pocket->value+$user->pocket->frizzed_value.' '.config('const.points_short_name')}}</strong></h1>
+                            <h1><strong><span id="ballance_span">{{$user->pocket->value+$user->pocket->frizzed_value}}</span>&nbsp;{{config('const.points_short_name')}}</strong></h1>
                         </div>
                     </div>
-                    <div class="referal-block gained-money">
-                        <div class="modal-header text-center"><strong>Gained all time</strong></div>
+                    <div class="referal-block gained-money" id="GainedAllTimeContainer">
+                        <div class="modal-header text-center"><strong>Gained all time</strong><div class="actions pull-right"><i class="fa fa-refresh" aria-hidden="true" onclick="updateGainedBallance();" style="cursor: pointer;"></i></div></div>
                         <div class="modal-body text-center">
-                            <h1><strong>{{$user->pocket->earned_all_time.' '.config('const.points_short_name')}}</strong></h1>
+                            <h1><strong><span id="gained_all_time_ballance_span">{{$user->pocket->earned_all_time}}</span>&nbsp;{{config('const.points_short_name')}}</strong></h1>
                         </div>
                     </div>
                 </div>
                 <div class="invited-users referal-block">
                     <ul class="nav nav-tabs">
                         <li class="nav active"><a href="#tab_user_invites" data-toggle="tab">Your referal invited</a></li>
-                        <li class="nav"><a href="#tab_user_tree" data-toggle="tab">Your tree invites</a></li>
+                        @if(false)<li class="nav"><a href="#tab_user_tree" data-toggle="tab">Your tree invites</a></li>@endif
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane fade in active chart" id="tab_user_invites">
-                            <div>
-                                <canvas id="myChart" width="200" height="100"></canvas>
-                            </div>
+                            <div id="myChart" style="width: 100%; height: 300px;"></div>
                         </div>
-                        <div class="tab-pane fade chart" id="tab_user_tree">
-                            <div>
-                                <canvas id="myChart2" width="200" height="100"></canvas>
-                            </div>
-                        </div>
+                        @if(false)<div class="tab-pane fade chart" id="tab_user_tree">
+                            <div id="myChart2" style="width: 100%; height: 300px;"></div>
+                        </div>@endif
                     </div>
                 </div>
                 <div class="referal-block withdraw">
                     <ul class="nav nav-tabs">
-                        <li class="nav active"><a href="#tab_internal_transaction" data-toggle="tab">Internal Transaction</a></li>
-                        <li class="nav"><a href="#tab_withdaw_money" data-toggle="tab">Withdraw Money</a></li>
+                        <li class="nav"><a href="#tab_internal_transaction" data-toggle="tab">Internal Transaction</a></li>
+                        <li class="nav active"><a href="#tab_withdaw_money" data-toggle="tab">Withdraw Money</a></li>
                         <li class="nav"><a href="#tab_pay_money" data-toggle="tab">Pay money</a></li>
                     </ul>
                     <div class="tab-content">
-                        <div class="tab-pane fade in active" id="tab_internal_transaction">
+                        <div class="tab-pane fade" id="tab_internal_transaction">
                             <div class="modal-header">
                                 <div class="logo-first-slide"><img src="/images/logo.png" alt="" height="100%"><span class="logo-text">{{ config('app.name', 'Laravel') }}</span></div>
                             </div>
                             <div class="modal-body text-center">
+                                @if( \App\InternalTransaction::checkAllowed(true) )
                                 <form action="{{ url('/payments/internal_transaction') }}" method="POST" role="form" class="text-left">
                                     {{ csrf_field() }}
                                     <div class="form-group{{ $errors->has('to_username') ? ' has-error' : '' }}">
@@ -108,13 +105,16 @@
                                     </div>
 
                                     <div class="form-group text-center">
-                                        <input type="submit" name="PAYMENT_METHOD" value="Withdraw!" class="btn btn-primary">
+                                        <input type="submit" name="PAYMENT_METHOD" value="Send Money!" class="btn btn-primary">
                                     </div>
                                     <div class="clearfix"></div>
                                 </form>
+                                @else
+                                    <span>You must invite 3 users</span>
+                                @endif
                             </div>
                         </div>
-                        <div class="tab-pane fade " id="tab_withdaw_money">
+                        <div class="tab-pane fade in active" id="tab_withdaw_money">
                             <div class="modal-header text-center">
                                 <img src="http://perfectmoney.is/img/logo3.png" alt=""><br>
                                 <small class="" style="margin-bottom: 20px; margin-top: 5px; display: inline-block;">Powered by Perfect Money</small></div>
@@ -158,12 +158,11 @@
                             <div class="modal-header text-center">
                                 <img src="http://perfectmoney.is/img/logo3.png" alt=""><br>
                                 <small class="" style="margin-bottom: 20px; margin-top: 5px; display: inline-block;">Powered by Perfect Money</small></div>
-                            <div class="modal-body text-left">
+                            <div class="modal-body text-center">
                                 <form role="form" method="POST" action="https://perfectmoney.is/api/step1.asp">
 
                                     <input type="hidden" name="PAYEE_ACCOUNT" value="{{$config['PAYEE_ACCOUNT']}}">
                                     <input type="hidden" name="PAYEE_NAME" value="{{$config['PAYEE_NAME']}}">
-                                    <input type="hidden" name="PAYMENT_ID" value="{{$config['PAYMENT_ID']}}">
                                     <input type="hidden" name="PAYMENT_UNITS" value="{{$config['PAYMENT_UNITS']}}">
                                     <input type="hidden" name="STATUS_URL" value="{{$config['STATUS_URL']}}">
                                     <input type="hidden" name="PAYMENT_URL" value="{{$config['PAYMENT_URL']}}">
@@ -243,7 +242,7 @@
             <div class="row">
                 <div class="referal-block">
                     <div class="modal-header text-center">
-                        <strong>To next payment:</strong>
+                        <strong>Till next payment:</strong>
                     </div>
                     <div class="modal-body text-center">
                         <div id="payment" style="width: 100%; font-size: 200%" class="flex-center timer">
@@ -261,47 +260,51 @@
                             <tbody>
                             <tr>
                                 <td class="text-center">
+                                    All<br><span class="text-default">{{$referal_counts['all']}}</span>
+                                <td class="text-center">
                                     Working<br><span class="text-success">{{$referal_counts['working']}}</span>
                                 <td class="text-center">
-                                    Frizzed<br><span class="text-primary">{{$referal_counts['frizzed']}}</span>
+                                    Frozen<br><span class="text-primary">{{$referal_counts['frizzed']}}</span>
                                 <td class="text-center">
                                     Banned<br><span class="text-danger">{{$referal_counts['banned']}}</span>
                             </tr>
                             </tbody>
                         </table>
                         @if(!isset($referals) || empty($referals))
-                            Refers
+                            You don`t have reffers
                         @else
-                            <div class="table-responsive">
+                            <div class="table-responsive" id="ReffersTable" style="display: none;">
                                 <table class="table table-bordered table-hover table-striped" style="background-color: #fff">
                                     <thead>
                                     <tr>
                                         <th class="text-center">#</th>
                                         <th class="text-center">Username</th>
+                                        <th class="text-center">Invites</th>
                                         <th class="text-center">Email</th>
                                         <th class="text-center">Status</th>
                                     </tr>
                                     </thead>
-                                    <tbody>
-                                    @foreach($referals as $referal)
-                                        <tr>
-                                            <td class="text-center">{{ $loop->iteration }}</td>
-                                            <td class="text-center">{{ $referal->name }}</td>
-                                            <td class="text-center">{{ $referal->email }}</td>
-                                            <td class="text-center">
-                                                @if($referal->status == 0)
-                                                    <span class="text-danger">Banned
-                                                        @elseif($referal->status == 1)
-                                                            <span class="text-success">Working
-                                                                @elseif($referal->status == 2)
-                                                                    <span class="text-primary">Frizzed ({!! html_entity_decode(\App\User::find($referal->id)->getBanTimeDays(true)) !!})
-                                                                        @endif
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    @endforeach
+                                    <tbody id="referals">
                                     </tbody>
                                 </table>
+                            </div>
+                            <div id="ReffersSpinner" class="loading full-width">
+                                <div class="spinner_def">
+                                    <div class="double-bounce1"></div>
+                                    <div class="double-bounce2"></div>
+                                </div>
+                            </div>
+                            <div class="buttons text-right form-inline">
+                                <div class="form-group">
+                                    <label for="reffersoffset">
+                                        Select offset:
+                                    </label>
+                                    <select name="refersCounter" id="reffersoffset" onchange="reffersFrom = this.value; getRefersFrom();" class="form-control">
+                                        @for($k = 0; ($referal_counts['all']/10) > $k; $k++)
+                                            <option value="{{$k*10}}">{{$k*10+1}}</option>
+                                        @endfor
+                                    </select>
+                                </div>
                             </div>
                         @endif
                     </div>
@@ -314,21 +317,27 @@
                                 <thead>
                                 <tr>
                                     <th class="text-center">#</th>
-                                    <th class="text-center">Count Users</th>
+                                    <th class="text-center">Fill status</th>
+                                    <th class="text-center" width="100">Users count</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 @foreach($levels as $level)
                                     @if($level['count'] > 0)
-                                    <tr>
-                                        <td class="text-center">{{$level['id']}}</td>
-                                        <td class="text-center">{{round( (100 / pow(3, $level['id']) * $level['count']), 2).'%'}}</td>
-                                    </tr>
+                                        <tr>
+                                            <td class="text-center">{{$level['id']}}</td>
+                                            <td class="text-center" style="position: relative;">
+                                                {{round( (100 / pow(3, $level['id']) * $level['count']), 2).'%'}}
+                                                <div class="fillstatus" style="position: absolute; background: #a3cbe6; left: 0; width: {{round( (100 / pow(3, $level['id']) * $level['count']), 2).'%'}}; bottom: 0; height: 2px;"></div>
+                                            </td>
+                                            <td class="text-center">{{$level['count']}}</td>
+                                        </tr>
                                     @else
-                                    <tr>
-                                        <td class="text-center">{{$level['id']}}</td>
-                                        <td class="text-center">{{$level['count'].'%'}}</td>
-                                    </tr>
+                                        <tr>
+                                            <td class="text-center">{{$level['id']}}</td>
+                                            <td class="text-center">{{$level['count'].'%'}}</td>
+                                            <td class="text-center">{{$level['count']}}</td>
+                                        </tr>
                                     @endif
                                 @endforeach
                                 </tbody>
@@ -340,7 +349,7 @@
                     <div class="modal-header text-center"><strong>Your referal link</strong></div>
                     <div class="modal-body text-center">
                         <div class="form-group flex-center">
-                            <input class="form-control" id="copy-ref-link" value="http://piligrim.group/register/?ref={{$user->name}}">
+                            <input class="form-control" id="copy-ref-link" value="http://piligrim-group.com/register/?ref={{$user->name}}">
                             <button class="btn btn-default" style="margin-left: 15px;" id="copy-ref-btn">Copy link  <i class="fa fa-files-o" aria-hidden="true"></i></button>
                         </div>
                     </div>
@@ -352,9 +361,143 @@
 
 @section('scripts')
     <script src="http://code.jquery.com/jquery-3.1.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
+        var days = ['Son','Mon','Tue','Wed','Thu','Fri','Sat'],
+                date = new Date(),
+                daysWeek = [],
+                dayNow = date.getUTCDay(),
+                i = dayNow,
+                start = false;
+        while(true) {
+            if(i == dayNow && start) break;
+            if(i < 0) {
+                i = 6;
+                start = true;
+            }
+            daysWeek.push(days[i]);
+            i--;
+        }
+        daysWeek.reverse();
+        var data = [{{implode(",",$referal_week)}}];
+        data.reverse();
+
+        var data2 = [{{implode(",",$referal_tree_week)}}];
+        data2.reverse();
+
+        $(document).ready(function(){
+            google.charts.load('current', {packages: ['corechart', 'line']});
+            google.charts.setOnLoadCallback(drawCharts);
+        });
+        function drawCharts() {
+            drawChartTree();
+            drawChartTree2();
+        }
+        function drawChartTree() {
+
+            var chartdata = google.visualization.arrayToDataTable([
+                ['Day', 'Users Count'],
+                [days[0],  data[0]],
+                [days[1],  data[1]],
+                [days[2],  data[2]],
+                [days[3],  data[3]],
+                [days[4],  data[4]],
+                [days[5],  data[5]],
+                [days[6],  data[6]]
+            ]);
+
+            console.log(chartdata);
+
+            var options = {
+                hAxis: {
+                    title: null
+                },
+                vAxis: {
+                    title: null
+                }
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('myChart'));
+
+            chart.draw(chartdata, options);
+        }
+        function drawChartTree2() {
+
+            var chartdata = google.visualization.arrayToDataTable([
+                ['Day', 'Users Count'],
+                [days[0],  data2[0]],
+                [days[1],  data2[1]],
+                [days[2],  data2[2]],
+                [days[3],  data2[3]],
+                [days[4],  data2[4]],
+                [days[5],  data2[5]],
+                [days[6],  data2[6]]
+            ]);
+
+            console.log(chartdata);
+
+            var options = {
+                hAxis: {
+                    title: null
+                },
+                vAxis: {
+                    title: null
+                }
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('myChart2'));
+
+            chart.draw(chartdata, options);
+        }
+    </script>
+    <script type="text/javascript">
+        function getCookie(name) {
+          var matches = document.cookie.match(new RegExp(
+            "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+          ));
+          return matches ? decodeURIComponent(matches[1]) : undefined;
+        }
+        function deleteCookie(name) {
+          setCookie(name, "", {
+            expires: -1
+          })
+        }
+        function setCookie(name, value, options) {
+          options = options || {};
+
+          var expires = options.expires;
+
+          if (typeof expires == "number" && expires) {
+            var d = new Date();
+            d.setTime(d.getTime() + expires * 1000);
+            expires = options.expires = d;
+          }
+          if (expires && expires.toUTCString) {
+            options.expires = expires.toUTCString();
+          }
+
+          value = encodeURIComponent(value);
+
+          var updatedCookie = name + "=" + value;
+
+          for (var propName in options) {
+            updatedCookie += "; " + propName;
+            var propValue = options[propName];
+            if (propValue !== true) {
+              updatedCookie += "=" + propValue;
+            }
+          }
+
+          document.cookie = updatedCookie;
+        }
+
         $(document).ready(function() {
+            if(getCookie('testpopup') == undefined) {
+                $('#test-week-popup').modal('show');
+                var date = new Date('8.12.2016');
+                setCookie('testpopup','1',date);
+            }
+
             var copyRefBtn = document.getElementById('copy-ref-btn');
             copyRefBtn.addEventListener('click', function(event) {
                 var copyLink = document.getElementById('copy-ref-link');
@@ -367,88 +510,6 @@
                 } catch (err) {
                     console.log('Oops, unable to copy');
                 }
-            });
-
-            var days = ['Son','Mon','Tue','Wed','Thu','Fri','Sat'],
-                date = new Date(),
-                daysWeek = [],
-                dayNow = date.getUTCDay(),
-                i = dayNow,
-                start = false;
-            while(true) {
-                if(i == dayNow && start) break;
-                if(i < 0) {
-                    i = 6;
-                    start = true;
-                }
-                daysWeek.push(days[i]);
-                i--;
-            }
-            daysWeek.reverse();
-            var data = [{{implode(",",$referal_week)}}];
-            data.reverse();
-            var ctx = document.getElementById("myChart");
-            var myChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: daysWeek,
-                    datasets: [{
-                        label: '№ of refers',
-                        data: data,
-                        tension: 0,
-                        backgroundColor: 'rgba(124, 181, 221, .5)',
-                        borderColor: 'rgba(0,0,0,.5)',
-                        borderWidth: 3,
-                        borderCapStyle: 'round',
-                        fill: 'bottom',
-                        pointBorderColor: 'transparent',
-                        pointBackgroundColor: 'rgba(0,0,0,1)',
-                        pointRadius: 3
-                    }]
-                },
-                options: {
-                    title: {
-                        display: true,
-                        text: "Users invited week",
-                        fontSize: 15,
-                        padding: 15
-                    }
-                },
-                responsive: true,
-                maintainAspectRatio: false
-            });
-
-            var data2 = [{{implode(",",$referal_tree_week)}}];
-            data2.reverse();
-            var ctx2 = document.getElementById("myChart2");
-            var myChart2 = new Chart(ctx2, {
-                type: 'line',
-                data: {
-                    labels: daysWeek,
-                    datasets: [{
-                        label: '№ of refers',
-                        data: data2,
-                        tension: 0,
-                        backgroundColor: 'rgba(124, 181, 221, .5)',
-                        borderColor: 'rgba(0,0,0,.5)',
-                        borderWidth: 3,
-                        borderCapStyle: 'round',
-                        fill: 'bottom',
-                        pointBorderColor: 'transparent',
-                        pointBackgroundColor: 'rgba(0,0,0,1)',
-                        pointRadius: 3
-                    }]
-                },
-                options: {
-                    title: {
-                        display: true,
-                        text: "Refers tree week",
-                        fontSize: 15,
-                        padding: 15
-                    }
-                },
-                responsive: true,
-                maintainAspectRatio: false
             });
         });
     </script>
@@ -533,6 +594,88 @@
             document.getElementById('payment_seconds').innerHTML = seconds;
         });
         timer2.start();
+    </script>
 
+
+
+
+    <script>
+        var reffersFrom = 0;
+        var reffersCounter = 0;
+
+        $(document).ready(function(){
+            $.ajaxSetup({
+                headers:{
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            getRefersFrom();
+        });
+        function updateBallance() {
+            $('#ballanceContainer').find('.fa-refresh').addClass('fa-spin');
+            $.ajax({
+                type: "POST",
+                url: '/ajax/getBallance',
+                data: {},
+                success: function( msg ) {
+                    $('#ballance_span').html(msg);
+                    $('#ballanceContainer').find('.fa-refresh').removeClass('fa-spin');
+                }
+            });
+        }
+        function updateGainedBallance() {
+            $('#GainedAllTimeContainer').find('.fa-refresh').addClass('fa-spin');
+            $.ajax({
+                type: "POST",
+                url: '/ajax/gainedAllTime',
+                data: {},
+                success: function( msg ) {
+                    $('#gained_all_time_ballance_span').html(msg);
+                    $('#GainedAllTimeContainer').find('.fa-refresh').removeClass('fa-spin');
+                }
+            });
+        }
+        function getRefersFrom() {
+            $('#ReffersTable').hide(0);
+            $('#ReffersSpinner').show(0);
+            $.ajax({
+                type: "POST",
+                url: '/ajax/reffersAjax',
+                data: {from:reffersFrom},
+                success: function( msg ) {
+                    manageRow(msg);
+                }
+            });
+        }
+        function manageRow(data) {
+            var	rows = '';
+            reffersCounter = 0;
+            $.each( data, function( key, value ) {
+                var local_counter = parseInt(reffersFrom) + parseInt(reffersCounter);
+                rows = rows + '<tr>';
+                rows = rows + '<td>'+(local_counter+1)+'</td>';
+                rows = rows + '<td>'+value.name+'</td>';
+                rows = rows + '<td>'+value.reffers_invited+'</td>';
+                rows = rows + '<td>'+value.email+'</td>';
+                rows = rows + '<td>'+generateReffStatus(value.status)+'</td>';
+                rows = rows + '</tr>';
+                reffersCounter++;
+            });
+
+            $("#referals").html(rows);
+            $('#ReffersTable').show(0);
+            $('#ReffersSpinner').hide(0);
+        }
+        function generateReffStatus(status) {
+            var ret = '';
+            if(status == 0)
+                ret += '<span class="text-danger">Banned';
+            else if(status == 1)
+                ret += '<span class="text-success">Working';
+            else if(status == 2)
+                ret += '<span class="text-primary">Frozen';
+            ret += '</span>';
+            return ret;
+        }
     </script>
 @endsection

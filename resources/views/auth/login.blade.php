@@ -11,7 +11,7 @@
 @endsection
 
 @section('content')
-<div class="container">
+<div id="beautyimg" class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default" style="margin-top: 20px; padding-top: 20px;">

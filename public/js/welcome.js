@@ -124,6 +124,13 @@ $(document).ready(function() {
         console.log('callback - particles.js config loaded');
     });
 
+    $('.advantage').on('mouseover', function() {
+      $(this).addClass('active');
+    });
+    $('.advantage').on('mouseleave', function() {
+      $(this).removeClass('active');
+    });
+
     $('.nav-left').click(function() {
       var $this = $(this);
       var $siblings = $this.siblings('.nav');

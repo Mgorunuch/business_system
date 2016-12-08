@@ -20,6 +20,7 @@ class CreateExternalTransactionsTable extends Migration
             $table->enum('type',['withdraw','put']);
             $table->string('vallet_from');
             $table->string('vallet_to');
+            $table->string('PAYMENT_BATCH_NUM')->nullable();
             $table->integer('pocket_id');
             $table->timestamps();
         });

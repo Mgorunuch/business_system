@@ -16,7 +16,8 @@ class AuthAdmin
      */
     public function handle($request, Closure $next)
     {
-        if(Auth::user()->id == 1) return $next($request);
-        return redirect('/referal');
+        if(Auth::user()->id == 1)
+            return $next($request);
+        return redirect('/blog');
     }
 }

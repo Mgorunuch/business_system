@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
+use App\Classes\PerfectMoney;
 
 class PaymentController extends Controller
 {
@@ -20,6 +21,12 @@ class PaymentController extends Controller
         return view('dashboard.payment.pay')->with(['message'=>'You must pay for subscription'])->with([
             'user'=>\Illuminate\Support\Facades\Auth::user(),
             'config'=>\Illuminate\Support\Facades\Config::get('PerfectMoney')
+        ]);
+    }
+
+    public function banned() {
+        return view('dashboard.payment.banned')->with(['message'=>'You banned'])->with([
+            'user'=>\Illuminate\Support\Facades\Auth::user()
         ]);
     }
 
@@ -52,7 +59,7 @@ class PaymentController extends Controller
             }
             return redirect('/blog');
         } else {
-            return back();
+            return redirect('/referal');
         }
     }
 
@@ -98,29 +105,38 @@ class PaymentController extends Controller
 
         $all = $request->all();
 
-        $user = User::where(['pocket_id','=',$all['POC']])->first();
+        $PM = new PerfectMoney($all);
 
-        if(!$user->hash_validate($all['HASH'])) {
-            Log::emergency("HASH ERROR! ",$all);
-            return redirect('/blog');
-        };
+        if($PM = 'OK') {
+            $user = User::where([['pocket_id','=',$all['POC']]])->first();
 
-        ($user->reffer_id) ? $reffer = User::find($user->reffer_id) : $reffer = false;
+            if(!$user->hash_validate($all['HASH'])) {
+                Log::emergency("HASH ERROR! ",$all);
+                return redirect('/referal');
+            };
 
-        $data = [
-            'amount' => $all['PAYMENT_AMOUNT'],
-            'vallet_from' => $all['PAYEE_ACCOUNT'],
-            'vallet_to' => 1,
-            'pocket_id' => $user->pocket_id,
-            'status' => 'success',
-            'type' => 'put'
-        ];
+            ($user->reffer_id) ? $reffer = User::find($user->reffer_id) : $reffer = false;
 
-        $transaction = ExternalTransaction::createNew($data);
+            $data = [
+                'value' => $all['PAYMENT_AMOUNT'],
+                'vallet_from' => $all['PAYEE_ACCOUNT'],
+                'vallet_to' => 1,
+                'pocket_id' => $user->pocket_id,
+                'status' => 'success',
+                'type' => 'put',
+                'PAYMENT_BATCH_NUM' => $all['PAYMENT_BATCH_NUM']
+            ];
 
-        PaymentController::activate();
-        return redirect('/blog');
+            $transaction = ExternalTransaction::createNew($data);
+            if($transaction == false) { return redirect('/referal'); }
 
+            if(Auth::user()->status == 2)
+                PaymentController::activate();
+            else
+                return back();
+
+        }
+        return redirect('/referal');
     }
 
     public function internal(Request $request) {
@@ -182,7 +198,7 @@ class PaymentController extends Controller
         $user = User::find($user_id);
         $algorithm = Config::get('const.algorithm');
         $month_price = Config::get('const.month_price');
-        if($user->pocket->check_balance()) return false;
+        if(!$user->pocket->check_balance()) return false;
 
         $data = [
             'pocket_from_id' => $user->pocket->id,
@@ -202,10 +218,10 @@ class PaymentController extends Controller
             $to_refer = $month_price/100*$to_refer;
             $data = [
                 'pocket_from_id' => $user->pocket->id,
-                'pocket_to_id' => $to_refer,
+                'pocket_to_id' => $user->reffer->pocket->id,
                 'value' => $to_refer
             ];
-            $transaction = InternalTransaction::createNew($data);
+            $transaction = InternalTransaction::createNew($data, true);
             $left_money -= $to_refer;
             // End money % to refer
 
@@ -215,6 +231,7 @@ class PaymentController extends Controller
                 PaymentController::toAdmin($info['pocket_from_id'], $left_money);
                 PaymentController::setLastPayment($user);
             }
+
             return true;
 
         }
@@ -226,7 +243,7 @@ class PaymentController extends Controller
             'value' => $month_price/100*$algorithm[$step]
         ];
         $left_money -= $data['value'];
-        $process = InternalTransaction::createNew($data);
+        $process = InternalTransaction::createNew($data, true);
 
         $step++;
 
@@ -267,7 +284,7 @@ class PaymentController extends Controller
                     'pocket_to_id'=>$user->reffer->pocket->id,
                     'value'=>$money
                 ];
-                $process = InternalTransaction::createNew($data);
+                $process = InternalTransaction::createNew($data, true);
 
                 $value -= $data['value'];
 
@@ -287,11 +304,13 @@ class PaymentController extends Controller
             'pocket_to_id' => 1,
             'value' => $value
         ];
-        $process = InternalTransaction::createNew($data);
+        $process = InternalTransaction::createNew($data, true);
     }
 
     public static function setLastPayment($user) {
         $user->pocket->last_payment = Carbon::now();
+        $user->pocket->save();
+        $user->status = 1;
         $user->save();
         return true;
     }

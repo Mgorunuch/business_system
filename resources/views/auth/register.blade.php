@@ -4,7 +4,7 @@
     <div class="page_info">
         <div class="container flex-center">
             <div class="title">
-                Registeration page
+                Registration page
             </div>
         </div>
     </div>
@@ -34,7 +34,7 @@
                         </div>
 
                         <div class="form-group{{ $errors->has('reffer_id') ? ' has-error' : '' }}">
-                            <label for="reffer_id" class="col-md-4 control-label">Refer username</label>
+                            <label for="reffer_id" class="col-md-4 control-label">Sponsor username</label>
 
                             <div class="col-md-6">
                                 @if(isset($_GET['ref']))

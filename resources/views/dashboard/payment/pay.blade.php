@@ -21,10 +21,13 @@
                     <div class="panel-body text-center">
                         <h3 class="reset-margin">Your balance now: <strong>{{$user->pocket->value+$user->pocket->frizzed_value}} PGC</strong></h3>
                         <span class="article-head-author" style="margin-bottom: 0; margin-top: 10px; display: inline-block;">1 PGC = 1 $</span>
+                        @if(($user->pocket->value+$user->pocket->frizzed_value) >= 10)
+                            <span class="article-head-author text-danger" style="margin-bottom: 0; margin-top: 10px; display: inline-block;">YOU HAVE MONEY FOR MONTH SUBSCRIPTION</span>
+                        @endif
                     </div>
                 </div>
             </div>
-            <div class="col-md-8 col-md-offset-2">
+            <div class="col-md-6 col-md-offset-3">
                 <div class="panel panel-default">
                     <div class="panel-body text-center">
                         <select name="choose_type" id="type" class="form-control" onchange="changePaymentType(this.value)">
@@ -40,7 +43,7 @@
 
                     <div id="piligrim" class="panel-body text-center" style="display: none;">
                         <div class="logo-first-slide"><img src="/images/logo.png" alt="" height="100%"><span class="logo-text">{{ config('app.name', 'Laravel') }}</span></div>
-                        <form action="{{ url('/payments/activate_account') }}">
+                        <form action="{{ url('/payments/activate_account') }}" method="POST">
                             {{ csrf_field() }}
                             <input type="submit" name="" value="Activate" class="btn btn-primary" style="margin-top: 20px;">
                         </form>

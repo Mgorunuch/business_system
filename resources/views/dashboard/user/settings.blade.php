@@ -81,7 +81,7 @@
                             <div class="form-group col-md-6">
                                 <label for="country">Country:</label>
                                 <select name="country" id="country" class="form-control">
-                                    <option value="0">Not know</option>
+                                    <option value="0">Unknown</option>
                                     @foreach(\Illuminate\Support\Facades\DB::table('countries')->get() as $country)
                                         <option value="{{$country->code}}" @if($country->code == $user->country_code) selected @endif>{{$country->name}}</option>
                                     @endforeach
@@ -113,7 +113,7 @@
                             <div class="form-group col-md-6">
                                 <label for="sex">Sex:</label>
                                 <select name="sex" id="sex" class="form-control">
-                                    <option value="0">Not know</option>
+                                    <option value="0">Unknown</option>
                                     <option value="man" @if($user->sex == "man") selected @endif>Man</option>
                                     <option value="woman" @if($user->sex == "woman") selected @endif>Woman</option>
                                 </select>

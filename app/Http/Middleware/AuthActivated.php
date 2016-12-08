@@ -16,7 +16,8 @@ class AuthActivated
      */
     public function handle($request, Closure $next)
     {
-        if(Auth::user()->status == 1) return $next($request);
+        if(Auth::user()->status == 1)
+            return $next($request);
         return redirect('/payments/pay');
     }
 }

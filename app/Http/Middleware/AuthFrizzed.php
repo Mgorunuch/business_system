@@ -16,7 +16,13 @@ class AuthFrizzed
      */
     public function handle($request, Closure $next)
     {
-        if(Auth::user()->id == 0) return $next($request);
-        return redirect('/referal');
+        $user_status = Auth::user()->status;
+        
+        if($user_status == 2)
+            return $next($request);
+        if($user_status == 1)
+            return redirect('/payments/pay/banned');
+
+        return redirect('/blog');
     }
 }

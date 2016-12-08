@@ -42,7 +42,9 @@ class Pocket extends Model
      */
     public function spend_balance($amount) {
         $this->value += $this->frizzed_value;
-        $this->frizzed_value -= $this->frizzed_value;
+        $this->frizzed_value = 0;
+        $this->save();
+
         if(($this->value - $amount) < 0)
             return false;
 
@@ -57,7 +59,7 @@ class Pocket extends Model
      */
     public function check_balance() {
         $month_payment = Config::get('const.month_price');
-        if($this->frizzed_value == $month_payment) {
+        if($this->frizzed_value >= $month_payment) {
             return true;
         } else {
             if($this->balance_pocket()) {
@@ -81,7 +83,7 @@ class Pocket extends Model
          *  2. Если замороженый меньше месячной оплаты и полный баланс больше месячной оплаты
          *  3. Если полный баланс меньше месячной оплаты
          */
-        if($this->frizzed_value == $month_payment) {
+        if($this->frizzed_value >= $month_payment) {
 
             return true;
 
@@ -105,6 +107,7 @@ class Pocket extends Model
         } else { // 3
 
             $this->frizzed_value += $this->value;
+            $this->value = 0;
             $this->save();
             return false;
 
